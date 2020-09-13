@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="bot/src/main/java"/>
+	<classpathentry kind="src" path="bot/target/generated-sources/antlr4"/>
+	<classpathentry kind="src" path="botlib/src/main/java"/>
+	<classpathentry kind="output" path="bot/target/classes"/>
+</classpath>

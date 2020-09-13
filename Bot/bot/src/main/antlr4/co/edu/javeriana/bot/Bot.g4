@@ -33,12 +33,12 @@ start
 // Todo lo que esté en líneas previas a lo modificaremos cuando hayamos visto Análisis Sintáctico
 
 //- Comandos del robot
-ROBOT_UP: [^][0-9]+;
-ROBOT_DOWN: [V][0-9]+;
-ROBOT_LEFT: [<][0-9]+;
-ROBOT_RIGHT: [>][0-9]+;
-ROBOT_PICK: 'P';
-ROBOT_DROP: 'D';
+//ROBOT_UP: [^][0-9]+;
+//ROBOT_DOWN: [V][0-9]+;
+//ROBOT_LEFT: [<][0-9]+;
+//ROBOT_RIGHT: [>][0-9]+;
+//ROBOT_PICK: 'P';
+//ROBOT_DROP: 'D';
 
 //- Impresion/Lectura por pantalla
 READ: '?';
@@ -93,7 +93,7 @@ STRING : '"' ('\\"'|.)*? '"';
 //- Comentarios
 COMMEENT
 :
-	[#]+ -> skip
+	[////]+ -> skip
 ;
 //- Expacios en blanco
 WS
