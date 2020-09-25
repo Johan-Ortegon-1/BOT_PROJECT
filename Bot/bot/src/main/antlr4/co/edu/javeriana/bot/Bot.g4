@@ -18,7 +18,36 @@ public BotParser(TokenStream input, Bot bot) {
 }
 
 
+funcion: NEW_FUNCT ID PAR_OPEN ((parametro)? | (parametro(COMMA parametro)*)) PAR_CLOSE THEN
+	componente*
+	END;
 
+parametro: NEW_VAR ID;
+
+componente: sentencia | ciclo | condicional;
+
+condicional: IF condicion_compuesta THEN 
+	componente*
+	ELSE
+	componente*
+END SEMICOLON;
+
+ciclo: WHILE condicion_compuesta THEN
+	componente*
+	END SEMICOLON;
+
+sentencia: (nueva_variable | nueva_variable_asig) SEMICOLON; 
+
+nueva_variable: NEW_VAR ID;
+nueva_variable_asig: NEW_VAR ID ASSIGN (NUM_FLOAT|STRING|BOOLEAN|operacion);
+variable_asig: ID ASSIGN (NUM_FLOAT|STRING|BOOLEAN|operacion);
+
+impresion: PRINT STRING (PLUS (ID|STRING))*;
+lectura: READ ID;
+
+condicion_compuesta: condicion ((AND|OR) condicion)*;
+condicion: ((ID|NUM_FLOAT|operacion) (GT|LT|GEQ|LEQ|EQ|NEQ) (STRING|NUM_FLOAT));
+operacion: NUM_FLOAT ((PLUS|MINUS|MULT|DIV|REVERSE) NUM_FLOAT)+;
 start
 :
 	'hello' 'world' {
@@ -67,7 +96,7 @@ DIV: '/';
 AND: '&';
 OR: '|';
 NOT: '!';
-REVERSE: [~]+[0-9]+;
+REVERSE: '~';
 
 //- Comparacion
 GT: '>';
@@ -81,7 +110,7 @@ NEQ: '<>';
 PAR_OPEN: '(';
 PAR_CLOSE: ')';
 SEMICOLON: ';';
-
+COMMA: ',';
 //- Identificadores
 ID : [a-zA-Z] [a-zA-Z0-9]* ;
 
