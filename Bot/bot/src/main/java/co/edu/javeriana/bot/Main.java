@@ -27,7 +27,7 @@ public class Main {
 				CommonTokenStream tokens = new CommonTokenStream(lexer);
 				BotParser parser = new BotParser(tokens, bot);
 
-				BotParser.StartContext tree = parser.start();
+				BotParser.RobotContext tree = parser.robot();
 
 				BotCustomVisitor visitor = new BotCustomVisitor();
 				visitor.visit(tree);

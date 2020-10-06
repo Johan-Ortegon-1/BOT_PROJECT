@@ -3,23 +3,60 @@ grammar Bot;
 @header {
 
 import org.jpavlich.bot.*;
-
+import java.util.Map;
+import java.util.HashMap;
 }
 
 @parser::members {
 
 private Bot bot;
-
+Map<String, Object> symbolTable = new HashMap<String, Object>();
 public BotParser(TokenStream input, Bot bot) {
     this(input);
     this.bot = bot;
 }
 
 }
+/*robot: ((movimiento_robot|accion_robot) SEMICOLON)+;
+movimiento_robot: movimiento pasos_robot
+				{if($movimiento.direccion.equals(">"))
+					{
+						System.out.println("Va a la derecha");
+						bot.right($pasos_robot.pasos);
+					}
+				 else if($movimiento.direccion.equals("<"))
+				 {
+				 	bot.left($pasos_robot.pasos);
+				 }
+				 else if($movimiento.direccion.equals("^"))
+				 {
+				 	bot.up($pasos_robot.pasos);
+				 }
+				 else if($movimiento.direccion.equals("V"))
+				 {
+				 	bot.down($pasos_robot.pasos);
+				 }
+				};
+accion_robot: (ROBOT_PICK | ROBOT_DROP);
+movimiento returns[String direccion]: (ROBOT_UP {$direccion = $ROBOT_UP.text;} | ROBOT_DOWN {$direccion = $ROBOT_DOWN.text;} | GT {$direccion = $GT.text;} | LT {$direccion = $LT.text;});
+pasos_robot returns[int pasos]: NUM_INT{$pasos = Integer.parseInt($NUM_INT.text);};*/
 
 robot: ((movimiento_robot|accion_robot) SEMICOLON)+;
-movimiento_robot: (ROBOT_UP | ROBOT_DOWN | GT | LT) ESPACIO NUM_INT;
+movimiento_robot: movimiento pasos_robot
+				{if(("'"+$movimiento.text+"'").equals(tokenNames[GT]))
+						bot.right($pasos_robot.pasos);
+				 else if(("'"+$movimiento.text+"'").equals(tokenNames[LT]))
+				 	bot.left($pasos_robot.pasos);
+				 else if(("'"+$movimiento.text+"'").equals(tokenNames[ROBOT_UP]))
+				 	bot.up($pasos_robot.pasos);
+				 else if(("'"+$movimiento.text+"'").equals(tokenNames[ROBOT_DOWN]))
+				 	bot.down($pasos_robot.pasos);
+				};
+movimiento : (ROBOT_UP | ROBOT_DOWN | GT | LT);
+pasos_robot returns[int pasos]: NUM_INT{$pasos = Integer.parseInt($NUM_INT.text);};
 accion_robot: (ROBOT_PICK | ROBOT_DROP);
+
+
 /* SEGUNDA ENTREGA
 funcion: NEW_FUNCT ID PAR_OPEN ((parametro)? | (parametro(COMMA parametro)*)) PAR_CLOSE THEN
 	componente*
@@ -51,7 +88,7 @@ lectura: READ ID;
 condicion_compuesta: condicion ((AND|OR) condicion)*;
 condicion: ((ID|NUM_FLOAT|operacion) (GT|LT|GEQ|LEQ|EQ|NEQ) (STRING|NUM_FLOAT));
 operacion: NUM_FLOAT ((PLUS|MINUS|MULT|DIV|REVERSE) NUM_FLOAT)+;	*/
-start
+/*start
 :
 	'hello' 'world' {
 		bot.up(5);
@@ -59,7 +96,7 @@ start
 		bot.right(5);
 		bot.left(5);
 	} 
-;
+;*/
 
 // Los tokens se escriben a continuación de estos comentarios.
 // Todo lo que esté en líneas previas a lo modificaremos cuando hayamos visto Análisis Sintáctico
@@ -69,7 +106,7 @@ ROBOT_UP: '^';
 ROBOT_DOWN: 'V';
 ROBOT_PICK: 'P';
 ROBOT_DROP: 'D';
-ESPACIO: ' ';
+
 //- Impresion/Lectura por pantalla
 READ: '?';
 PRINT: '$';
