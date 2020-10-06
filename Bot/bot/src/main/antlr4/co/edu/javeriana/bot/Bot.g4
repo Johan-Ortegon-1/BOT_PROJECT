@@ -17,44 +17,28 @@ public BotParser(TokenStream input, Bot bot) {
 }
 
 }
-/*robot: ((movimiento_robot|accion_robot) SEMICOLON)+;
-movimiento_robot: movimiento pasos_robot
-				{if($movimiento.direccion.equals(">"))
-					{
-						System.out.println("Va a la derecha");
-						bot.right($pasos_robot.pasos);
-					}
-				 else if($movimiento.direccion.equals("<"))
-				 {
-				 	bot.left($pasos_robot.pasos);
-				 }
-				 else if($movimiento.direccion.equals("^"))
-				 {
-				 	bot.up($pasos_robot.pasos);
-				 }
-				 else if($movimiento.direccion.equals("V"))
-				 {
-				 	bot.down($pasos_robot.pasos);
-				 }
-				};
-accion_robot: (ROBOT_PICK | ROBOT_DROP);
-movimiento returns[String direccion]: (ROBOT_UP {$direccion = $ROBOT_UP.text;} | ROBOT_DOWN {$direccion = $ROBOT_DOWN.text;} | GT {$direccion = $GT.text;} | LT {$direccion = $LT.text;});
-pasos_robot returns[int pasos]: NUM_INT{$pasos = Integer.parseInt($NUM_INT.text);};*/
-
 robot: ((movimiento_robot|accion_robot) SEMICOLON)+;
-movimiento_robot: movimiento pasos_robot
-				{if(("'"+$movimiento.text+"'").equals(tokenNames[GT]))
-						bot.right($pasos_robot.pasos);
-				 else if(("'"+$movimiento.text+"'").equals(tokenNames[LT]))
-				 	bot.left($pasos_robot.pasos);
-				 else if(("'"+$movimiento.text+"'").equals(tokenNames[ROBOT_UP]))
-				 	bot.up($pasos_robot.pasos);
-				 else if(("'"+$movimiento.text+"'").equals(tokenNames[ROBOT_DOWN]))
-				 	bot.down($pasos_robot.pasos);
+movimiento_robot: (mover_arriba | mover_izquierda | mover_derecha | mover_abajo);
+				
+mover_arriba: ROBOT_UP pasos_robot
+				{
+					bot.up($pasos_robot.pasos);
 				};
-movimiento : (ROBOT_UP | ROBOT_DOWN | GT | LT);
+mover_izquierda: LT pasos_robot
+				{
+					bot.left($pasos_robot.pasos);
+				};
+mover_derecha: GT pasos_robot
+				{
+					bot.right($pasos_robot.pasos);
+				};
+mover_abajo: ROBOT_DOWN pasos_robot
+				{
+					bot.down($pasos_robot.pasos);
+				};
 pasos_robot returns[int pasos]: NUM_INT{$pasos = Integer.parseInt($NUM_INT.text);};
 accion_robot: (ROBOT_PICK | ROBOT_DROP);
+
 
 
 /* SEGUNDA ENTREGA
