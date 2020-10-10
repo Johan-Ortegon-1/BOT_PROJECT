@@ -14,9 +14,9 @@ import java.util.Map;
 public class Numero implements ASTNode{
     float value;
 
-    public Numero(float value) {
+    public Numero(String value) {
         super();
-        this.value = value;
+        this.value = Float.parseFloat(value);
     }
     
     

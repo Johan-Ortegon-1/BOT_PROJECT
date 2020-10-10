@@ -48,24 +48,34 @@ accion_robot: (ROBOT_PICK | ROBOT_DROP);
 
 //Tipos de datos
 expresion returns [ASTNode node]:
-    t1=factor{$node=$t1.node;}
+    t1=factor{
+    	$node=$t1.node;
+    	System.out.println("Factor: " + $node);
+    }
     (PLUS t2=factor{$node=new Suma($node,$t2.node);})*;
 
 factor returns [ASTNode node]:t1=term{$node=$t1.node;}
     (MULT t2=term{$node=new Multiplicacion($node,$t2.node);})*;
 
+/*term returns [ASTNode node]:
+    NUM_FLOAT{
+    	$node=new Numero(Float.parseFloat($NUM_FLOAT.text));
+    	System.out.println("Float: " + $node);
+    }
+    | ID{$node=new VarReferencia($ID.text);}
+    | PAR_OPEN expresion {$node=$expresion.node;} PAR_CLOSE;*/
+
 term returns [ASTNode node]:
-    NUM_FLOAT{$node=new Numero(Float.parseFloat($NUM_FLOAT.text));}
+    NUM_FLOAT{$node=new Numero($NUM_FLOAT.text);}
+    | NUM_INT{$node=new Numero($NUM_INT.text);}
     | ID{$node=new VarReferencia($ID.text);}
     | PAR_OPEN expresion {$node=$expresion.node;} PAR_CLOSE;
 
 cadena returns [ASTNode node]: STRING {$node = new Cadena($STRING.text);};
-bool returns [ASTNode node]: BOOLEAN {$node = new Bool(Boolean.parseBoolean($BOOLEAN.text));};
+bool returns [ASTNode node]: BOOLEAN {$node = new Bool($BOOLEAN.text);};
     
 //Variables
-variable returns [ASTNode node]: expresion {$node=$expresion.node;}| cadena {
-	$node=$cadena.node;
-}| bool {$node=$bool.node;};
+variable returns [ASTNode node]: expresion {$node=$expresion.node;}| cadena {$node=$cadena.node;}| bool {$node=$bool.node;};
 nueva_variable returns[ASTNode node]: NEW_VAR ID {$node=new VarDeclaracion($ID.text);};
 nueva_variable_asig : NEW_VAR ID ASSIGN variable; //Por hacer
 variable_asig returns [ASTNode node]: ID ASSIGN variable {$node=new VarAsignacion($ID.text,$variable.node);};
@@ -173,7 +183,8 @@ ID : [a-zA-Z] [a-zA-Z0-9]* ;
 
 //- Constantes
 NUM_INT: [0-9]+;
-NUM_FLOAT: [0-9]+('.')?[0-9]*;
+//NUM_FLOAT: [0-9]+('.')?[0-9]*;
+NUM_FLOAT: ([0-9]+('.'[0-9]*)?|'.'[0-9]+);
 BOOLEAN: ('@T'|'@F');
 STRING : '"' ('\\"'|.)*? '"';
 

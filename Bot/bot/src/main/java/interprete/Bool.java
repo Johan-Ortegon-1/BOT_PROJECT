@@ -14,9 +14,12 @@ import java.util.Map;
 public class Bool implements ASTNode{
     boolean value;
 
-    public Bool(boolean value) {
+    public Bool(String value) {
         super();
-        this.value = value;
+        if(value.equals("@T"))
+        	this.value = true;
+        else if(value.equals("@F"))
+        	this.value = false;
     }
 
     @Override
