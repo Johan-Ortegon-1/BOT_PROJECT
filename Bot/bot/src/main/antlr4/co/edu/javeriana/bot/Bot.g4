@@ -27,7 +27,7 @@ program: {
     (componente {body.add($componente.node);})*
     {
         for(ASTNode n:body){
-            n.execute(symbolTable);
+        	n.execute(symbolTable);	
         }
     };
 
@@ -51,7 +51,7 @@ expresion returns [ASTNode node]:
     t1=factor{$node=$t1.node;}
     (PLUS t2=factor{$node=new Suma($node,$t2.node);})*;
 
-factor returns [ASTNode node]:t1=term{$node=t1.node;}
+factor returns [ASTNode node]:t1=term{$node=$t1.node;}
     (MULT t2=term{$node=new Multiplicacion($node,$t2.node);})*;
 
 term returns [ASTNode node]:
@@ -59,11 +59,13 @@ term returns [ASTNode node]:
     | ID{$node=new VarReferencia($ID.text);}
     | PAR_OPEN expresion {$node=$expresion.node;} PAR_CLOSE;
 
-cadena returns [ASTNode node]: STRING {new Cadena($STRING.text);};
-bool returns [ASTNode node]: BOOLEAN {new Bool(Boolean.parseBoolean($BOOLEAN.text));};
+cadena returns [ASTNode node]: STRING {$node = new Cadena($STRING.text);};
+bool returns [ASTNode node]: BOOLEAN {$node = new Bool(Boolean.parseBoolean($BOOLEAN.text));};
     
 //Variables
-variable returns [ASTNode node]: expresion {$node=$expresion.node;}| cadena {$node=$cadena.node;}| bool {$node=$bool.node;};
+variable returns [ASTNode node]: expresion {$node=$expresion.node;}| cadena {
+	$node=$cadena.node;
+}| bool {$node=$bool.node;};
 nueva_variable returns[ASTNode node]: NEW_VAR ID {$node=new VarDeclaracion($ID.text);};
 nueva_variable_asig : NEW_VAR ID ASSIGN variable; //Por hacer
 variable_asig returns [ASTNode node]: ID ASSIGN variable {$node=new VarAsignacion($ID.text,$variable.node);};
@@ -84,7 +86,9 @@ parametro: NEW_VAR ID;
 */
 
 //componente: sentencia | ciclo | condicional;
-componente returns [ASTNode node]: sentencia {$node=$sentencia.node;};
+componente returns [ASTNode node]: sentencia {
+	$node=$sentencia.node;
+};
 
 condicional: IF condicion_compuesta THEN 
 	componente+
@@ -97,7 +101,7 @@ END SEMICOLON;
 	END SEMICOLON;
 */
 //impresion: PRINT (STRING (PLUS (ID|STRING))*) | ID {System.out.println()};
-impresion returns [ASTNode node]: PRINT variable {new Println($variable.node);};
+impresion returns [ASTNode node]: PRINT variable {$node = new Println($variable.node);};
 lectura: READ ID;
 
 condicion_compuesta: condicion ((AND|OR) condicion)*;

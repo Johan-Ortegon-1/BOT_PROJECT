@@ -23,7 +23,7 @@ public class Println implements ASTNode{
     @Override
     public Object execute(Map<String,Object> symbolTable) {
         System.out.println(data.execute(symbolTable));     
-        return  null;
+        return null;
     }
     
     

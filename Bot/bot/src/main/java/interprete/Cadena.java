@@ -12,7 +12,7 @@ import java.util.Map;
  * @author edwin
  */
 public class Cadena implements ASTNode{
-    String value;
+    public String value;
 
     public Cadena(String value) {
         super();
