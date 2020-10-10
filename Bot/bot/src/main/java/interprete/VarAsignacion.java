@@ -11,20 +11,20 @@ import java.util.Map;
  *
  * @author edwin
  */
-public class Multiplicacion implements ASTNode{
-    private ASTNode operand1;
-    private ASTNode operand2;
+public class VarAsignacion implements ASTNode{
+    private String name;
+    private ASTNode variable;
 
-    public Multiplicacion(ASTNode operand1, ASTNode operand2) {
+    public VarAsignacion(String name, ASTNode variable) {
         super();
-        this.operand1 = operand1;
-        this.operand2 = operand2;
+        this.name = name;
+        this.variable = variable;
     }
-    
-    
+
     @Override
     public Object execute(Map<String,Object> symbolTable) {
-        return  (float) operand1.execute(symbolTable) * (float)operand2.execute(symbolTable);
+        symbolTable.put(name,variable.execute(symbolTable));
+        return null;
     }
     
     

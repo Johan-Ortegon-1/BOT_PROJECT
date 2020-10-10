@@ -5,6 +5,8 @@
  */
 package interprete;
 
+import java.util.Map;
+
 /**
  *
  * @author edwin
@@ -21,8 +23,8 @@ public class Suma implements ASTNode{
     
     
     @Override
-    public Object execute() {
-        return  (int) operand1.execute() + (int)operand2.execute();
+    public Object execute(Map<String,Object> symbolTable) {
+        return  (float) operand1.execute(symbolTable) + (float)operand2.execute(symbolTable);
     }
     
     

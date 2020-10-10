@@ -6,6 +6,7 @@
 package interprete;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -23,14 +24,14 @@ public class Condicional implements ASTNode {
     }
 
     @Override
-    public Object execute() {
-        if((boolean)condicion.execute()){
+    public Object execute(Map<String,Object> symbolTable) {
+        if((boolean)condicion.execute(symbolTable)){
             for(ASTNode n:body)
-                n.execute();
+                n.execute(symbolTable);
         }
         else{
             for(ASTNode n:elseBody)
-                n.execute();
+                n.execute(symbolTable);
         }
         return null;
     }

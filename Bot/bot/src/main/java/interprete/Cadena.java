@@ -6,11 +6,22 @@
 package interprete;
 
 import java.util.Map;
-import java.util.HashMap;
+
 /**
  *
  * @author edwin
  */
-public interface ASTNode {
-    public Object execute(Map<String,Object> symbolTable);
+public class Cadena implements ASTNode{
+    String value;
+
+    public Cadena(String value) {
+        super();
+        this.value = value;
+    }
+
+    @Override
+    public Object execute(Map<String, Object> symbolTable) {
+        return value;
+    }
+    
 }

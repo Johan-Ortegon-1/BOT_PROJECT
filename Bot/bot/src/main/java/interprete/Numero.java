@@ -11,22 +11,20 @@ import java.util.Map;
  *
  * @author edwin
  */
-public class Println implements ASTNode{
-    private ASTNode data;
+public class Numero implements ASTNode{
+    float value;
 
-    public Println(ASTNode data) {
+    public Numero(float value) {
         super();
-        this.data=data;
+        this.value = value;
     }
+    
     
     
     @Override
-    public Object execute(Map<String,Object> symbolTable) {
-        System.out.println(data.execute(symbolTable));     
-        return  null;
+    public Object execute(Map<String, Object> symbolTable) {
+        return value;
     }
-    
-    
     
     
 }

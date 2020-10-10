@@ -11,21 +11,19 @@ import java.util.Map;
  *
  * @author edwin
  */
-public class Println implements ASTNode{
-    private ASTNode data;
+public class VarDeclaracion implements ASTNode {
+    
+    private String name;
 
-    public Println(ASTNode data) {
-        super();
-        this.data=data;
+    public VarDeclaracion(String name) {
+        this.name = name;
     }
-    
-    
+
     @Override
-    public Object execute(Map<String,Object> symbolTable) {
-        System.out.println(data.execute(symbolTable));     
-        return  null;
+    public Object execute(Map<String, Object> symbolTable) {
+        symbolTable.put(name, new Object());
+        return null;
     }
-    
     
     
     

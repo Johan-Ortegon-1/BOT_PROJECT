@@ -5,12 +5,13 @@ grammar Bot;
 import org.jpavlich.bot.*;
 import java.util.Map;
 import java.util.HashMap;
+import interprete.*;
 }
 
 @parser::members {
 
 private Bot bot;
-Map<String, Object> symbolTable = new HashMap<String, Object>();
+//Map<String, Object> symbolTable = new HashMap<String, Object>();
 public BotParser(TokenStream input, Bot bot) {
     this(input);
     this.bot = bot;
@@ -18,40 +19,72 @@ public BotParser(TokenStream input, Bot bot) {
 
 }
 
-program: robot | sentencia*;
+program: { 
+            List<ASTNode> body=new ArrayList<ASTNode>();
+            Map<String,Object> symbolTable=new HashMap<String,Object>();
+         }
+    //robot* | 
+    (componente {body.add($componente.node);})*
+    {
+        for(ASTNode n:body){
+            n.execute(symbolTable);
+        }
+    };
+
 robot: ((movimiento_robot|accion_robot) SEMICOLON)+;
-movimiento_robot: (mover_arriba | mover_izquierda | mover_derecha | mover_abajo);
-				
-mover_arriba: ROBOT_UP pasos_robot
-				{
-					bot.up($pasos_robot.pasos);
-				};
-mover_izquierda: LT pasos_robot
-				{
-					bot.left($pasos_robot.pasos);
-				};
-mover_derecha: GT pasos_robot
-				{
-					bot.right($pasos_robot.pasos);
-				};
-mover_abajo: ROBOT_DOWN pasos_robot
-				{
-					bot.down($pasos_robot.pasos);
-				};
+
+//Movimientos robot
+movimiento_robot: (mover_arriba | mover_izquierda | mover_derecha | mover_abajo);			
+mover_arriba: ROBOT_UP pasos_robot {bot.up($pasos_robot.pasos); };
+mover_izquierda: LT pasos_robot {bot.left($pasos_robot.pasos);};
+mover_derecha: GT pasos_robot{bot.right($pasos_robot.pasos);};
+mover_abajo: ROBOT_DOWN pasos_robot{bot.down($pasos_robot.pasos);};
 pasos_robot returns[int pasos]: NUM_INT{$pasos = Integer.parseInt($NUM_INT.text);};
+
+//Aciones robot
 accion_robot: (ROBOT_PICK | ROBOT_DROP);
 
-
-
 //SEGUNDA ENTREGA
-funcion: NEW_FUNCT ID PAR_OPEN ((parametro)? | (parametro(COMMA parametro)*)) PAR_CLOSE THEN
+
+//Tipos de datos
+expresion returns [ASTNode node]:
+    t1=factor{$node=$t1.node;}
+    (PLUS t2=factor{$node=new Suma($node,$t2.node);})*;
+
+factor returns [ASTNode node]:t1=term{$node=t1.node;}
+    (MULT t2=term{$node=new Multiplicacion($node,$t2.node);})*;
+
+term returns [ASTNode node]:
+    NUM_FLOAT{$node=new Numero(Float.parseFloat($NUM_FLOAT.text));}
+    | ID{$node=new VarReferencia($ID.text);}
+    | PAR_OPEN expresion {$node=$expresion.node;} PAR_CLOSE;
+
+cadena returns [ASTNode node]: STRING {new Cadena($STRING.text);};
+bool returns [ASTNode node]: BOOLEAN {new Bool(Boolean.parseBoolean($BOOLEAN.text));};
+    
+//Variables
+variable returns [ASTNode node]: expresion {$node=$expresion.node;}| cadena {$node=$cadena.node;}| bool {$node=$bool.node;};
+nueva_variable returns[ASTNode node]: NEW_VAR ID {$node=new VarDeclaracion($ID.text);};
+nueva_variable_asig : NEW_VAR ID ASSIGN variable; //Por hacer
+variable_asig returns [ASTNode node]: ID ASSIGN variable {$node=new VarAsignacion($ID.text,$variable.node);};
+
+sentencia returns [ASTNode node]: 
+    (nueva_variable {$node=$nueva_variable.node;}
+    //| nueva_variable_asig {$node=$nueva_variable_asig.node;}
+    | variable_asig {$node=$variable_asig.node;}
+    | impresion {$node=$impresion.node;}
+    //| lectura{$node=$lectura.node;}
+    ) SEMICOLON; 
+
+/*funcion: NEW_FUNCT ID PAR_OPEN ((parametro)? | (parametro(COMMA parametro)*)) PAR_CLOSE THEN
 	componente*
 	END;
 
 parametro: NEW_VAR ID;
+*/
 
-
-componente: sentencia | ciclo | condicional;
+//componente: sentencia | ciclo | condicional;
+componente returns [ASTNode node]: sentencia {$node=$sentencia.node;};
 
 condicional: IF condicion_compuesta THEN 
 	componente+
@@ -59,30 +92,12 @@ condicional: IF condicion_compuesta THEN
 	componente+)?
 END SEMICOLON;
 
-ciclo: WHILE condicion_compuesta THEN
+/*ciclo: WHILE condicion_compuesta THEN
 	componente*
 	END SEMICOLON;
-
-expresion returns [Object value]:
-    t1=factor{$value=Float.parseFloat($t1.value);}
-    (PLUS t2=factor{$value=Float.parseFloat($value)+Float.parseFloat($t2.value);})*;
-
-factor returns [Object value] :t1=term{$value=Float.parseFloat($t1.value);}
-    (MULT t2=term{$value=Float.parseFloat($value)*Float.parseFloat($t2.value);})*;
-
-term returns [Object value]:
-    NUM_FLOAT{$value=Float.parseFloat($NUM_FLOAT.text);}
-    | ID{$value=symbolTable.get($ID.text);}
-    | PAR_OPEN expresion {$value=$expresion.value;} PAR_CLOSE;
-    
-sentencia: (nueva_variable | nueva_variable_asig | impresion | lectura) SEMICOLON; 
-
-nueva_variable: NEW_VAR ID {symbolTable.put($ID.text,0);};
-nueva_variable_asig: NEW_VAR ID ASSIGN (expresion|STRING|BOOLEAN); //Por hacer
-variable_asig: ID ASSIGN (expresion|STRING|BOOLEAN) {symbolTable.get($ID.text,$expresion.value);};
-
+*/
 //impresion: PRINT (STRING (PLUS (ID|STRING))*) | ID {System.out.println()};
-impresion: PRINT expresion {System.out.println($expresion.value);};
+impresion returns [ASTNode node]: PRINT variable {new Println($variable.node);};
 lectura: READ ID;
 
 condicion_compuesta: condicion ((AND|OR) condicion)*;

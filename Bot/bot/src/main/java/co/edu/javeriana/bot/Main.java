@@ -8,6 +8,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.jpavlich.bot.Bot;
 import org.jpavlich.bot.BotApplication;
 
+
 public class Main {
 
 	private static final String EXTENSION = "bot";
