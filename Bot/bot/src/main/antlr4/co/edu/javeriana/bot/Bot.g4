@@ -18,7 +18,7 @@ public BotParser(TokenStream input, Bot bot) {
 
 }
 
-program: robot | sentencia*;
+program: (robot | sentencia)*;
 robot: ((movimiento_robot|accion_robot) SEMICOLON)+;
 movimiento_robot: (mover_arriba | mover_izquierda | mover_derecha | mover_abajo);
 				
@@ -43,6 +43,43 @@ accion_robot: (ROBOT_PICK | ROBOT_DROP);
 
 
 
+/*Implementacion del analisis semantico */
+
+	//Declaracion de variables y asignacion
+nueva_variable: NEW_VAR ID 
+	{symbolTable.put($ID.text,0);};
+
+nueva_variable_asig: NEW_VAR ID ASSIGN (expresion|STRING|BOOLEAN); //Por hacer
+
+variable_asig: ID ASSIGN (expresion|STRING|BOOLEAN) {symbolTable.put($ID.text,$expresion.value);};
+
+impresion: PRINT expresion {System.out.println($expresion.value);};
+
+/*expresion returns [Object value]:
+    t1=factor{$value=Float.parseFloat($t1.value);}
+    (PLUS t2=factor{$value=Float.parseFloat($value)+Float.parseFloat($t2.value);})*;*/
+
+expresion returns [Object value]:
+    t1=factor{$value=(Float)$t1.value;}
+    (PLUS t2=factor{$value=(Float)$value+(Float)$t2.value;})*;
+
+factor returns [Object value] :t1=term{$value=(Float)$t1.value;}
+    (MULT t2=term{$value=(Float)$value * (Float)$t2.value;})*;
+
+term returns [Object value]:
+    NUM_FLOAT{$value=Float.parseFloat($NUM_FLOAT.text);}
+    | ID {$value = symbolTable.get($ID.text);}
+    | PAR_OPEN expresion {$value=$expresion.value;} PAR_CLOSE;
+
+
+
+
+
+
+
+
+
+
 //SEGUNDA ENTREGA
 funcion: NEW_FUNCT ID PAR_OPEN ((parametro)? | (parametro(COMMA parametro)*)) PAR_CLOSE THEN
 	componente*
@@ -62,27 +99,10 @@ END SEMICOLON;
 ciclo: WHILE condicion_compuesta THEN
 	componente*
 	END SEMICOLON;
-
-expresion returns [Object value]:
-    t1=factor{$value=Float.parseFloat($t1.value);}
-    (PLUS t2=factor{$value=Float.parseFloat($value)+Float.parseFloat($t2.value);})*;
-
-factor returns [Object value] :t1=term{$value=Float.parseFloat($t1.value);}
-    (MULT t2=term{$value=Float.parseFloat($value)*Float.parseFloat($t2.value);})*;
-
-term returns [Object value]:
-    NUM_FLOAT{$value=Float.parseFloat($NUM_FLOAT.text);}
-    | ID{$value=symbolTable.get($ID.text);}
-    | PAR_OPEN expresion {$value=$expresion.value;} PAR_CLOSE;
     
 sentencia: (nueva_variable | nueva_variable_asig | impresion | lectura) SEMICOLON; 
 
-nueva_variable: NEW_VAR ID {symbolTable.put($ID.text,0);};
-nueva_variable_asig: NEW_VAR ID ASSIGN (expresion|STRING|BOOLEAN); //Por hacer
-variable_asig: ID ASSIGN (expresion|STRING|BOOLEAN) {symbolTable.get($ID.text,$expresion.value);};
-
 //impresion: PRINT (STRING (PLUS (ID|STRING))*) | ID {System.out.println()};
-impresion: PRINT expresion {System.out.println($expresion.value);};
 lectura: READ ID;
 
 condicion_compuesta: condicion ((AND|OR) condicion)*;
