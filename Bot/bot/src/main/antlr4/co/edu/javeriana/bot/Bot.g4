@@ -17,6 +17,8 @@ public BotParser(TokenStream input, Bot bot) {
 }
 
 }
+
+program: robot | sentencia*;
 robot: ((movimiento_robot|accion_robot) SEMICOLON)+;
 movimiento_robot: (mover_arriba | mover_izquierda | mover_derecha | mover_abajo);
 				
@@ -41,12 +43,13 @@ accion_robot: (ROBOT_PICK | ROBOT_DROP);
 
 
 
-/* SEGUNDA ENTREGA
+//SEGUNDA ENTREGA
 funcion: NEW_FUNCT ID PAR_OPEN ((parametro)? | (parametro(COMMA parametro)*)) PAR_CLOSE THEN
 	componente*
 	END;
 
 parametro: NEW_VAR ID;
+
 
 componente: sentencia | ciclo | condicional;
 
@@ -60,18 +63,31 @@ ciclo: WHILE condicion_compuesta THEN
 	componente*
 	END SEMICOLON;
 
+expresion returns [Object value]:
+    t1=factor{$value=Float.parseFloat($t1.value);}
+    (PLUS t2=factor{$value=Float.parseFloat($value)+Float.parseFloat($t2.value);})*;
+
+factor returns [Object value] :t1=term{$value=Float.parseFloat($t1.value);}
+    (MULT t2=term{$value=Float.parseFloat($value)*Float.parseFloat($t2.value);})*;
+
+term returns [Object value]:
+    NUM_FLOAT{$value=Float.parseFloat($NUM_FLOAT.text);}
+    | ID{$value=symbolTable.get($ID.text);}
+    | PAR_OPEN expresion {$value=$expresion.value;} PAR_CLOSE;
+    
 sentencia: (nueva_variable | nueva_variable_asig | impresion | lectura) SEMICOLON; 
 
-nueva_variable: NEW_VAR ID;
-nueva_variable_asig: NEW_VAR ID ASSIGN (NUM_FLOAT|STRING|BOOLEAN|operacion);
-variable_asig: ID ASSIGN (NUM_FLOAT|STRING|BOOLEAN|operacion);
+nueva_variable: NEW_VAR ID {symbolTable.put($ID.text,0);};
+nueva_variable_asig: NEW_VAR ID ASSIGN (expresion|STRING|BOOLEAN); //Por hacer
+variable_asig: ID ASSIGN (expresion|STRING|BOOLEAN) {symbolTable.get($ID.text,$expresion.value);};
 
-impresion: PRINT STRING (PLUS (ID|STRING))*;
+//impresion: PRINT (STRING (PLUS (ID|STRING))*) | ID {System.out.println()};
+impresion: PRINT expresion {System.out.println($expresion.value);};
 lectura: READ ID;
 
 condicion_compuesta: condicion ((AND|OR) condicion)*;
-condicion: ((ID|NUM_FLOAT|operacion) (GT|LT|GEQ|LEQ|EQ|NEQ) (STRING|NUM_FLOAT));
-operacion: NUM_FLOAT ((PLUS|MINUS|MULT|DIV|REVERSE) NUM_FLOAT)+;	*/
+condicion: ((ID|NUM_FLOAT|expresion) (GT|LT|GEQ|LEQ|EQ|NEQ) (STRING|NUM_FLOAT|expresion));
+//operacion: NUM_FLOAT ((PLUS|MINUS|MULT|DIV|REVERSE) NUM_FLOAT)+;
 /*start
 :
 	'hello' 'world' {
