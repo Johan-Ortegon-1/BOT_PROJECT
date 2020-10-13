@@ -31,7 +31,7 @@ program: {
         }
     };
 
-robot: ((movimiento_robot|accion_robot) SEMICOLON)+;
+robot returns [ASTNode node]: ((movimiento_robot|accion_robot) SEMICOLON)+;
 
 //Movimientos robot
 movimiento_robot: (mover_arriba | mover_izquierda | mover_derecha | mover_abajo);			
@@ -48,22 +48,11 @@ accion_robot: (ROBOT_PICK | ROBOT_DROP);
 
 //Tipos de datos
 expresion returns [ASTNode node]:
-    t1=factor{
-    	$node=$t1.node;
-    	System.out.println("Factor: " + $node);
-    }
-    (PLUS t2=factor{$node=new Suma($node,$t2.node);})*;
+    t1=factor{$node=$t1.node;}
+    ((PLUS t2=factor{$node = new Suma($node,$t2.node);}) | (MINUS t2=factor{$node = new Resta($node,$t2.node);}) | (REVERSE t2=factor{$node = new Inverso($node);}))*;
 
 factor returns [ASTNode node]:t1=term{$node=$t1.node;}
-    (MULT t2=term{$node=new Multiplicacion($node,$t2.node);})*;
-
-/*term returns [ASTNode node]:
-    NUM_FLOAT{
-    	$node=new Numero(Float.parseFloat($NUM_FLOAT.text));
-    	System.out.println("Float: " + $node);
-    }
-    | ID{$node=new VarReferencia($ID.text);}
-    | PAR_OPEN expresion {$node=$expresion.node;} PAR_CLOSE;*/
+    ((MULT t2=term{$node = new Multiplicacion($node,$t2.node);}) | (DIV t2=term{$node = new Division($node,$t2.node);}))*;
 
 term returns [ASTNode node]:
     NUM_FLOAT{$node=new Numero($NUM_FLOAT.text);}
@@ -80,11 +69,44 @@ nueva_variable returns[ASTNode node]: NEW_VAR ID {$node=new VarDeclaracion($ID.t
 nueva_variable_asig : NEW_VAR ID ASSIGN variable; //Por hacer
 variable_asig returns [ASTNode node]: ID ASSIGN variable {$node=new VarAsignacion($ID.text,$variable.node);};
 
+//Condicionales
+ 
+/*condicional: IF condicion_compuesta THEN 
+	componente+
+	(ELSE
+	componente+)?
+END SEMICOLON;*/
+
+condicional returns[ASTNode node]: IF condicion_compuesta THEN //Falta trabajar
+			{
+				List<ASTNode> body = new ArrayList<ASTNode>();
+			}
+				(s1 = componente {body.add($s1.node);})*
+			{
+				$node = new Condicional($condicion_compuesta.node, body, null);
+			}
+			(ELSE
+				{
+					List<ASTNode> elseBody = new ArrayList<ASTNode>();
+				}
+				(s2 = componente {elseBody.add($s2.node);})*
+				{
+					$node = new Condicional($condicion_compuesta.node, body, elseBody);
+				})?
+END SEMICOLON;
+
+
+condicion_compuesta returns[ASTNode node]: condicion ((AND|OR) condicion)*;
+condicion returns[ASTNode node]: ((ID|NUM_FLOAT|expresion) (GT|LT|GEQ|LEQ|EQ|NEQ) (STRING|NUM_FLOAT|expresion));
+
+//
+
 sentencia returns [ASTNode node]: 
     (nueva_variable {$node=$nueva_variable.node;}
     //| nueva_variable_asig {$node=$nueva_variable_asig.node;}
     | variable_asig {$node=$variable_asig.node;}
     | impresion {$node=$impresion.node;}
+    | robot {$node = $robot.node;}
     //| lectura{$node=$lectura.node;}
     ) SEMICOLON; 
 
@@ -100,11 +122,7 @@ componente returns [ASTNode node]: sentencia {
 	$node=$sentencia.node;
 };
 
-condicional: IF condicion_compuesta THEN 
-	componente+
-	(ELSE
-	componente+)?
-END SEMICOLON;
+
 
 /*ciclo: WHILE condicion_compuesta THEN
 	componente*
@@ -114,8 +132,6 @@ END SEMICOLON;
 impresion returns [ASTNode node]: PRINT variable {$node = new Println($variable.node);};
 lectura: READ ID;
 
-condicion_compuesta: condicion ((AND|OR) condicion)*;
-condicion: ((ID|NUM_FLOAT|expresion) (GT|LT|GEQ|LEQ|EQ|NEQ) (STRING|NUM_FLOAT|expresion));
 //operacion: NUM_FLOAT ((PLUS|MINUS|MULT|DIV|REVERSE) NUM_FLOAT)+;
 /*start
 :
