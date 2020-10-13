@@ -64,7 +64,7 @@ cadena returns [ASTNode node]: STRING {$node = new Cadena($STRING.text);};
 bool returns [ASTNode node]: BOOLEAN {$node = new Bool($BOOLEAN.text);};
     
 //Variables
-variable returns [ASTNode node]: expresion {$node=$expresion.node;}| cadena {$node=$cadena.node;}| bool {$node=$bool.node;};
+variable returns [ASTNode node]: expresion {$node=$expresion.node;} | cadena {$node=$cadena.node;} | bool {$node=$bool.node;} | condicion_compuesta {$node=$condicion_compuesta.node;};
 nueva_variable returns[ASTNode node]: NEW_VAR ID {$node=new VarDeclaracion($ID.text);};
 nueva_variable_asig : NEW_VAR ID ASSIGN variable; //Por hacer
 variable_asig returns [ASTNode node]: ID ASSIGN variable {$node=new VarAsignacion($ID.text,$variable.node);};

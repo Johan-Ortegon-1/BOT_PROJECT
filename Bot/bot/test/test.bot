@@ -1,2 +1,11 @@
-$ 4~4;
-> 4;
+'nueva;
+nueva <- 20.0;
+$ nueva;
+nueva <- "hola";
+$ nueva;
+nueva <- @T;
+$ nueva;
+nueva <- (2+2)*2/2+1;
+$ nueva;
+nueva <- 2>2;
+$ nueva;
