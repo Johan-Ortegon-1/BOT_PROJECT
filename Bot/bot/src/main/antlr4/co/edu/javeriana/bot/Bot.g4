@@ -47,16 +47,20 @@ accion_robot: (ROBOT_PICK | ROBOT_DROP);
 //SEGUNDA ENTREGA
 
 //Tipos de datos
+   
 expresion returns [ASTNode node]:
     t1=factor{$node=$t1.node;}
-    ((PLUS t2=factor{$node = new Suma($node,$t2.node);}) | (MINUS t2=factor{$node = new Resta($node,$t2.node);}) | (REVERSE t2=factor{$node = new Inverso($node);}))*;
+    ((PLUS t2=factor{$node = new Suma($node,$t2.node);}) | (MINUS t2=factor{$node = new Resta($node,$t2.node);}))*;
 
 factor returns [ASTNode node]:t1=term{$node=$t1.node;}
-    ((MULT t2=term{$node = new Multiplicacion($node,$t2.node);}) | (DIV t2=term{$node = new Division($node,$t2.node);}))*;
+    ((MULT t2=term{$node = new Multiplicacion($node,$t2.node);}) | (DIV t2=term{$node = new Division($node,$t2.node);}) | (REVERSE t2=term {$node=new Inverso($t2.node);}))*;
+
+factor_reverse returns [ASTNode node]: (REVERSE t2=term{$node = $t2.node;});
 
 term returns [ASTNode node]:
     NUM_FLOAT{$node=new Numero($NUM_FLOAT.text);}
     | NUM_INT{$node=new Numero($NUM_INT.text);}
+    | factor_reverse {$node=new Inverso($factor_reverse.node);}
     | ID{$node=new VarReferencia($ID.text);}
     | PAR_OPEN expresion {$node=$expresion.node;} PAR_CLOSE;
 

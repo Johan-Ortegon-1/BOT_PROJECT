@@ -7,5 +7,6 @@ nueva <- @T;
 $ nueva;
 nueva <- (2+2)*2/2+1;
 $ nueva;
-nueva <- 2>2;
+nueva <- ~4.0*1.0-8/2;
 $ nueva;
+	
