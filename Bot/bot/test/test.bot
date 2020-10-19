@@ -1,12 +1,5 @@
 'nueva;
-nueva <- 20.0;
+nueva <- (4>~20*5+1000) & @T |@T;
 $ nueva;
-nueva <- "hola";
+nueva <- "hola" <> "holas";
 $ nueva;
-nueva <- @T;
-$ nueva;
-nueva <- (2+2)*2/2+1;
-$ nueva;
-nueva <- ~4.0*1.0-8/2;
-$ nueva;
-	

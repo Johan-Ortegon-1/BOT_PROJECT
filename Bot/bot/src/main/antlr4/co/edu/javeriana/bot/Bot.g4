@@ -47,15 +47,12 @@ accion_robot: (ROBOT_PICK | ROBOT_DROP);
 //SEGUNDA ENTREGA
 
 //Tipos de datos
-   
 expresion returns [ASTNode node]:
     t1=factor{$node=$t1.node;}
     ((PLUS t2=factor{$node = new Suma($node,$t2.node);}) | (MINUS t2=factor{$node = new Resta($node,$t2.node);}))*;
 
 factor returns [ASTNode node]:t1=term{$node=$t1.node;}
-    ((MULT t2=term{$node = new Multiplicacion($node,$t2.node);}) | (DIV t2=term{$node = new Division($node,$t2.node);}) | (REVERSE t2=term {$node=new Inverso($t2.node);}))*;
-
-factor_reverse returns [ASTNode node]: (REVERSE t2=term{$node = $t2.node;});
+    ((MULT t2=term{$node = new Multiplicacion($node,$t2.node);}) | (DIV t2=term{$node = new Division($node,$t2.node);}))*;
 
 term returns [ASTNode node]:
     NUM_FLOAT{$node=new Numero($NUM_FLOAT.text);}
@@ -64,11 +61,13 @@ term returns [ASTNode node]:
     | ID{$node=new VarReferencia($ID.text);}
     | PAR_OPEN expresion {$node=$expresion.node;} PAR_CLOSE;
 
+factor_reverse returns [ASTNode node]: (REVERSE t2=term{$node = $t2.node;});
+
 cadena returns [ASTNode node]: STRING {$node = new Cadena($STRING.text);};
 bool returns [ASTNode node]: BOOLEAN {$node = new Bool($BOOLEAN.text);};
     
 //Variables
-variable returns [ASTNode node]: expresion {$node=$expresion.node;} | cadena {$node=$cadena.node;} | bool {$node=$bool.node;} | condicion_compuesta {$node=$condicion_compuesta.node;};
+variable returns [ASTNode node]: expresion {$node=$expresion.node;} | cadena {$node=$cadena.node;} | bool {$node=$bool.node;} | expresion_logica {$node=$expresion_logica.node;};
 nueva_variable returns[ASTNode node]: NEW_VAR ID {$node=new VarDeclaracion($ID.text);};
 nueva_variable_asig : NEW_VAR ID ASSIGN variable; //Por hacer
 variable_asig returns [ASTNode node]: ID ASSIGN variable {$node=new VarAsignacion($ID.text,$variable.node);};
@@ -102,6 +101,35 @@ END SEMICOLON;
 
 condicion_compuesta returns[ASTNode node]: condicion ((AND|OR) condicion)*;
 condicion returns[ASTNode node]: ((ID|NUM_FLOAT|expresion) (GT|LT|GEQ|LEQ|EQ|NEQ) (STRING|NUM_FLOAT|expresion));
+
+expresion_logica returns [ASTNode node]:
+    t1=factor_logico{$node=$t1.node;} (OR t2=factor_logico{$node = new Or($node,$t2.node);})*;
+
+factor_logico returns [ASTNode node]:t1=factor_igualdad{$node=$t1.node;}
+    (AND t2=factor_igualdad{$node = new And($node,$t2.node);})*;
+
+factor_igualdad returns [ASTNode node]:t1=factor_comparacion{$node=$t1.node;}
+    ((EQ t2=factor_comparacion{$node = new Igual($node,$t2.node);}) | (NEQ t2=factor_comparacion{$node = new NoIgual($node,$t2.node);}))*;
+
+factor_comparacion returns [ASTNode node]:t1=term_logico{$node=$t1.node;}
+    ((GT t2=term_logico{$node = new Mayor($node,$t2.node);}) 
+    	| (GEQ t2=term_logico{$node = new MayorIgual($node,$t2.node);})
+    	| (LT t2=term_logico{$node = new Menor($node,$t2.node);})
+    	| (LEQ t2=term_logico{$node = new MenorIgual($node,$t2.node);})
+    	| (NOT t2=term_logico {$node=new Not($t2.node);})
+    )*;
+
+factor_reverse_logico returns [ASTNode node]: (NOT t2=term_logico{$node = $t2.node;});
+
+term_logico returns [ASTNode node]:
+    expresion {$node= $expresion.node;}
+    | BOOLEAN {$node=new Bool($BOOLEAN.text);}
+    | STRING {$node=new Cadena($STRING.text);}
+    | factor_reverse_logico {$node=new Not($factor_reverse_logico.node);}
+    | PAR_OPEN expresion_logica {$node=$expresion_logica.node;} PAR_CLOSE;
+
+
+//end Condicionales
 
 //
 

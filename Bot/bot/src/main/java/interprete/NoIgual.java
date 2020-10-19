@@ -25,7 +25,7 @@ public class NoIgual implements ASTNode{
     @Override
     public Object execute(Map<String,Object> symbolTable) {
         if(operand1.execute(symbolTable) instanceof Float && operand2.execute(symbolTable) instanceof Float) {
-        	if ((float) operand1.execute(symbolTable) > (float) operand2.execute(symbolTable))
+        	if ((float) operand1.execute(symbolTable) != (float) operand2.execute(symbolTable))
             {
             	return true;
             }
@@ -34,7 +34,7 @@ public class NoIgual implements ASTNode{
         	}
         }
         else if(operand1.execute(symbolTable) instanceof String && operand2.execute(symbolTable) instanceof String) {
-        	if (((String)operand1.execute(symbolTable)).compareTo((String)operand2.execute(symbolTable)) == 1)
+        	if (!((String)operand1.execute(symbolTable)).equals((String)operand2.execute(symbolTable)))
             {
             	return true;
             }
