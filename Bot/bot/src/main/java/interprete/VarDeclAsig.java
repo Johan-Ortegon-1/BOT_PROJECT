@@ -11,11 +11,11 @@ import java.util.Map;
  *
  * @author edwin
  */
-public class VarAsignacion implements ASTNode{
+public class VarDeclAsig implements ASTNode{
     private String name;
     private ASTNode variable;
 
-    public VarAsignacion(String name, ASTNode variable) {
+    public VarDeclAsig(String name, ASTNode variable) {
         super();
         this.name = name;
         this.variable = variable;
@@ -23,7 +23,7 @@ public class VarAsignacion implements ASTNode{
 
     @Override
     public Object execute(Map<String,Object> symbolTable) {
-        symbolTable.put(name,variable.execute(symbolTable));
+        symbolTable.put(name,variable);
         return null;
     }
     

@@ -31,6 +31,7 @@ program: {
         }
     };
 
+//robot returns [ASTNode node]: ((movimiento_robot{$node=$movimiento_robot.node;}|accion_robot{$node=$accion_robot.node;}) SEMICOLON)+;
 robot returns [ASTNode node]: ((movimiento_robot|accion_robot) SEMICOLON)+;
 
 //Movimientos robot
@@ -69,7 +70,7 @@ bool returns [ASTNode node]: BOOLEAN {$node = new Bool($BOOLEAN.text);};
 //Variables
 variable returns [ASTNode node]: expresion {$node=$expresion.node;} | cadena {$node=$cadena.node;} | bool {$node=$bool.node;} | expresion_logica {$node=$expresion_logica.node;};
 nueva_variable returns[ASTNode node]: NEW_VAR ID {$node=new VarDeclaracion($ID.text);};
-nueva_variable_asig : NEW_VAR ID ASSIGN variable; //Por hacer
+nueva_variable_asig returns [ASTNode node]: NEW_VAR ID ASSIGN variable{$node=new VarDeclAsig($ID.text,$variable.node);}; //Por hacer
 variable_asig returns [ASTNode node]: ID ASSIGN variable {$node=new VarAsignacion($ID.text,$variable.node);};
 
 //Condicionales
@@ -135,7 +136,7 @@ term_logico returns [ASTNode node]:
 
 sentencia returns [ASTNode node]: 
     (nueva_variable {$node=$nueva_variable.node;}
-    //| nueva_variable_asig {$node=$nueva_variable_asig.node;}
+    | nueva_variable_asig {$node=$nueva_variable_asig.node;}
     | variable_asig {$node=$variable_asig.node;}
     | impresion {$node=$impresion.node;}
     | robot {$node = $robot.node;}

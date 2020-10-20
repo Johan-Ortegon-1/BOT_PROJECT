@@ -23,7 +23,9 @@ public class VarAsignacion implements ASTNode{
 
     @Override
     public Object execute(Map<String,Object> symbolTable) {
-        symbolTable.put(name,variable.execute(symbolTable));
+        if(symbolTable.containsKey(name))
+            symbolTable.replace(name,variable);
+        else System.out.println("Error asignacion");
         return null;
     }
     

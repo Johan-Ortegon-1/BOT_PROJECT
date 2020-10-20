@@ -3,3 +3,8 @@ nueva <- (4>~20*5+1000) & @T |@T;
 $ nueva;
 nueva <- "hola" <> "holas";
 $ nueva;
+asig <- "Hola";
+'asig <- "Hola";
+$ asig;
+asig <-"Mundo";
+$ asig;
