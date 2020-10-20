@@ -23,5 +23,4 @@ public class Cadena implements ASTNode{
     public Object execute(Map<String, Object> symbolTable) {
         return value;
     }
-    
 }

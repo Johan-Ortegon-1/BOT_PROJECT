@@ -140,7 +140,7 @@ sentencia returns [ASTNode node]:
     | variable_asig {$node=$variable_asig.node;}
     | impresion {$node=$impresion.node;}
     | robot {$node = $robot.node;}
-    //| lectura{$node=$lectura.node;}
+    | lectura{$node=$lectura.node;}
     ) SEMICOLON; 
 
 /*funcion: NEW_FUNCT ID PAR_OPEN ((parametro)? | (parametro(COMMA parametro)*)) PAR_CLOSE THEN
@@ -163,7 +163,7 @@ componente returns [ASTNode node]: sentencia {
 */
 //impresion: PRINT (STRING (PLUS (ID|STRING))*) | ID {System.out.println()};
 impresion returns [ASTNode node]: PRINT variable {$node = new Println($variable.node);};
-lectura: READ ID;
+lectura returns [ASTNode node]: READ ID {$node =new Lectura($ID.text);};
 
 //operacion: NUM_FLOAT ((PLUS|MINUS|MULT|DIV|REVERSE) NUM_FLOAT)+;
 /*start

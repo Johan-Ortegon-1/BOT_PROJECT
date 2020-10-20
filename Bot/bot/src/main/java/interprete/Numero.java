@@ -26,5 +26,4 @@ public class Numero implements ASTNode{
         return value;
     }
     
-    
 }

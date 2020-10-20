@@ -23,10 +23,10 @@ public class VarDeclAsig implements ASTNode{
 
     @Override
     public Object execute(Map<String,Object> symbolTable) {
-        symbolTable.put(name,variable);
+        symbolTable.put(name,variable.execute(symbolTable));
         return null;
     }
-    
+
     
     
     

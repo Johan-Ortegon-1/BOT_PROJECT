@@ -24,7 +24,8 @@ public class Println implements ASTNode{
     public Object execute(Map<String,Object> symbolTable) {
         System.out.println(data.execute(symbolTable));     
         return null;
-    }
+    } 
+    
     
     
     

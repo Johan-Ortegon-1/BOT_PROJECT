@@ -27,7 +27,4 @@ public class Or implements ASTNode{
         return  (boolean) operand1.execute(symbolTable) || (boolean)operand2.execute(symbolTable);
     }
     
-    
-    
-    
 }
