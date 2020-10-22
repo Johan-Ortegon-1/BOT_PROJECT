@@ -78,7 +78,7 @@ variable_asig returns [ASTNode node]: ID ASSIGN variable {$node=new VarAsignacio
 
 //Condicionales
 
-condicional returns[ASTNode node]: IF expresion_logica THEN //Falta trabajar
+condicional returns[ASTNode node]: IF expresion_logica THEN 
 			{
 				List<ASTNode> body = new ArrayList<ASTNode>();
 			}
@@ -96,8 +96,18 @@ condicional returns[ASTNode node]: IF expresion_logica THEN //Falta trabajar
 				})?
 END SEMICOLON;
 
-condicion_compuesta returns[ASTNode node]: condicion ((AND|OR) condicion)*;
-condicion returns[ASTNode node]: ((ID|NUM_FLOAT|expresion) (GT|LT|GEQ|LEQ|EQ|NEQ) (STRING|NUM_FLOAT|expresion));
+
+ciclo returns [ASTNode node]: WHILE PAR_OPEN expresion_logica PAR_CLOSE THEN
+        {
+            List<ASTNode> body = new ArrayList<ASTNode>();
+        }
+                (s1 = componente {body.add($s1.node);})*
+        {
+            $node = new Ciclo($expresion_logica.node, body);
+	}
+	END SEMICOLON;
+
+
 
 expresion_logica returns [ASTNode node]:
     t1=factor_logico{$node=$t1.node;} (OR t2=factor_logico{$node = new Or($node,$t2.node);})*;
@@ -148,14 +158,11 @@ parametro: NEW_VAR ID;
 
 //componente: sentencia | ciclo | condicional;
 componente returns [ASTNode node]: sentencia {$node=$sentencia.node;}
-	| condicional {$node=$condicional.node;};
+	| condicional {$node=$condicional.node;}
+        | ciclo {$node=$ciclo.node;};
 
 
 
-/*ciclo: WHILE condicion_compuesta THEN
-	componente*
-	END SEMICOLON;
-*/
 //impresion: PRINT (STRING (PLUS (ID|STRING))*) | ID {System.out.println()};
 impresion returns [ASTNode node]: PRINT variable {$node = new Println($variable.node);};
 lectura returns [ASTNode node]: READ ID {$node =new Lectura($ID.text);};

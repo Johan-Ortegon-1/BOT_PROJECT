@@ -8,3 +8,16 @@ $ nuevaVariable;
 		$ "Verdadero mayor a 0";
 	end;
 end;
+'i <- 5;
+while (i < 10 & i <> 7) ->
+  $ "haha";
+  if i = 6 ->
+    $ "si imprime";
+  end;
+  'bool <-@T;
+  while (bool) ->
+    $ "bool";
+    bool <-@F;
+  end;
+  i <- (i+1);
+end;
