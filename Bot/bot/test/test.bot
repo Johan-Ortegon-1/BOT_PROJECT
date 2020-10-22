@@ -1,23 +1,7 @@
-if "hola" = "holasdds" ->
-$ "Verdadero";
-else
-$ "Falso";
-'nuevaVariable <- 5;
-$ nuevaVariable;
-	if nuevaVariable > 0 ->
-		$ "Verdadero mayor a 0";
-	end;
+'new <-2;
+'old <-7;
+if @T ->
+  'new <- 3;
+  $ new;
 end;
-'i <- 5;
-while (i < 10 & i <> 7) ->
-  $ "haha";
-  if i = 6 ->
-    $ "si imprime";
-  end;
-  'bool <-@T;
-  while (bool) ->
-    $ "bool";
-    bool <-@F;
-  end;
-  i <- (i+1);
-end;
+$ new;

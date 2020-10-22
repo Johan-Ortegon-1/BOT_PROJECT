@@ -10,9 +10,9 @@ import interprete.*;
 }
 
 @parser::members {
-
 private Bot bot;
 //Map<String, Object> symbolTable = new HashMap<String, Object>();
+Stack pila = new Stack();
 public BotParser(TokenStream input, Bot bot) {
     this(input);
     this.bot = bot;
@@ -23,15 +23,19 @@ public BotParser(TokenStream input, Bot bot) {
 program: { 
             List<ASTNode> body=new ArrayList<ASTNode>();
             Map<String,Object> symbolTable=new HashMap<String,Object>();
-            Stack pila = new Stack();
             pila.push(symbolTable);
          }
     //robot* | 
     (componente {body.add($componente.node);})*
     {
+        System.out.println("Size:"+pila.size());
         for(ASTNode n:body){
-        	n.execute(symbolTable);	
+                Map map=((Map)pila.peek());
+                System.out.println(map);
+        	n.execute(map);     
         }
+        pila.pop();
+        System.out.println("Size:"+pila.size());
     };
 
 //robot returns [ASTNode node]: ((movimiento_robot{$node=$movimiento_robot.node;}|accion_robot{$node=$accion_robot.node;}) SEMICOLON)+;
@@ -80,32 +84,44 @@ variable_asig returns [ASTNode node]: ID ASSIGN variable {$node=new VarAsignacio
 
 condicional returns[ASTNode node]: IF expresion_logica THEN 
 			{
-				List<ASTNode> body = new ArrayList<ASTNode>();
+                            Map<String,Object> symbolTable=new HashMap<String,Object>();
+                            pila.push(symbolTable);
+                            List<ASTNode> body = new ArrayList<ASTNode>();
 			}
-				(s1 = componente {body.add($s1.node);})*
+                            (s1 = componente {body.add($s1.node);})*
 			{
-				$node = new Condicional($expresion_logica.node, body, null);
+                            $node = new Condicional($expresion_logica.node, body, null);
 			}
 			(ELSE
-				{
-					List<ASTNode> elseBody = new ArrayList<ASTNode>();
-				}
-				(s2 = componente {elseBody.add($s2.node);})*
-				{
-					$node = new Condicional($expresion_logica.node, body, elseBody);
-				})?
-END SEMICOLON;
+                            {
+                                //Map<String,Object> symbolTable=new HashMap<String,Object>();
+                                //pila.push(symbolTable);
+                                List<ASTNode> elseBody = new ArrayList<ASTNode>();
+                            }
+                            (s2 = componente {elseBody.add($s2.node);})*
+                            {
+                                $node = new Condicional($expresion_logica.node, body, elseBody);
+                            })?
+                        END SEMICOLON
+                        {
+                            pila.pop();
+                        };
 
 
 ciclo returns [ASTNode node]: WHILE PAR_OPEN expresion_logica PAR_CLOSE THEN
         {
+            Map<String,Object> symbolTable=new HashMap<String,Object>();
+            pila.push(symbolTable);
             List<ASTNode> body = new ArrayList<ASTNode>();
         }
-                (s1 = componente {body.add($s1.node);})*
+            (s1 = componente {body.add($s1.node);})*
         {
             $node = new Ciclo($expresion_logica.node, body);
 	}
-	END SEMICOLON;
+	END SEMICOLON
+        {
+            pila.pop();
+        };
 
 
 
@@ -134,11 +150,6 @@ term_logico returns [ASTNode node]:
     | STRING {$node=new Cadena($STRING.text);}
     | factor_reverse_logico {$node=new Not($factor_reverse_logico.node);}
     | PAR_OPEN expresion_logica {$node=$expresion_logica.node;} PAR_CLOSE;
-
-
-//end Condicionales
-
-//
 
 sentencia returns [ASTNode node]: 
     (nueva_variable {$node=$nueva_variable.node;}
@@ -179,7 +190,6 @@ lectura returns [ASTNode node]: READ ID {$node =new Lectura($ID.text);};
 ;*/
 
 // Los tokens se escriben a continuación de estos comentarios.
-// Todo lo que esté en líneas previas a lo modificaremos cuando hayamos visto Análisis Sintáctico
 
 //- Comandos del robot
 ROBOT_UP: '^';
@@ -195,18 +205,20 @@ PRINT: '$';
 NEW_FUNCT: 'define';
 RETURN: 'return';
 END: 'end';
-	//- Variables
+
+//- Variables
 NEW_VAR: '\'';
 ASSIGN: '<-';
-	//- Condicionales
+
+//- Condicionales
 IF: 'if';
 ELSE: 'else';
 THEN: '->';
 
-	//- Ciclos
+//- Ciclos
 WHILE: 'while';
 
-	//- Operadores - Logica
+//- Operadores - Logica
 PLUS: '+';
 MINUS: '-';
 MULT: '*';
@@ -229,6 +241,7 @@ PAR_OPEN: '(';
 PAR_CLOSE: ')';
 SEMICOLON: ';';
 COMMA: ',';
+
 //- Identificadores
 ID : [a-zA-Z] [a-zA-Z0-9]* ;
 
@@ -240,12 +253,7 @@ BOOLEAN: ('@T'|'@F');
 STRING : '"' ('\\"'|.)*? '"';
 
 //- Comentarios
-COMMEENT
-:
-	[////]+ -> skip
-;
+COMMEENT: [////]+ -> skip;
+
 //- Expacios en blanco
-WS
-:
-	[ \t\r\n]+ -> skip
-;
+WS: [ \t\r\n]+ -> skip;
