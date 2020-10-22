@@ -5,6 +5,7 @@ grammar Bot;
 import org.jpavlich.bot.*;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Stack;
 import interprete.*;
 }
 
@@ -22,6 +23,8 @@ public BotParser(TokenStream input, Bot bot) {
 program: { 
             List<ASTNode> body=new ArrayList<ASTNode>();
             Map<String,Object> symbolTable=new HashMap<String,Object>();
+            Stack pila = new Stack();
+            pila.push(symbolTable);
          }
     //robot* | 
     (componente {body.add($componente.node);})*
@@ -74,20 +77,14 @@ nueva_variable_asig returns [ASTNode node]: NEW_VAR ID ASSIGN variable{$node=new
 variable_asig returns [ASTNode node]: ID ASSIGN variable {$node=new VarAsignacion($ID.text,$variable.node);};
 
 //Condicionales
- 
-/*condicional: IF condicion_compuesta THEN 
-	componente+
-	(ELSE
-	componente+)?
-END SEMICOLON;*/
 
-condicional returns[ASTNode node]: IF condicion_compuesta THEN //Falta trabajar
+condicional returns[ASTNode node]: IF expresion_logica THEN //Falta trabajar
 			{
 				List<ASTNode> body = new ArrayList<ASTNode>();
 			}
 				(s1 = componente {body.add($s1.node);})*
 			{
-				$node = new Condicional($condicion_compuesta.node, body, null);
+				$node = new Condicional($expresion_logica.node, body, null);
 			}
 			(ELSE
 				{
@@ -95,10 +92,9 @@ condicional returns[ASTNode node]: IF condicion_compuesta THEN //Falta trabajar
 				}
 				(s2 = componente {elseBody.add($s2.node);})*
 				{
-					$node = new Condicional($condicion_compuesta.node, body, elseBody);
+					$node = new Condicional($expresion_logica.node, body, elseBody);
 				})?
 END SEMICOLON;
-
 
 condicion_compuesta returns[ASTNode node]: condicion ((AND|OR) condicion)*;
 condicion returns[ASTNode node]: ((ID|NUM_FLOAT|expresion) (GT|LT|GEQ|LEQ|EQ|NEQ) (STRING|NUM_FLOAT|expresion));
@@ -151,9 +147,8 @@ parametro: NEW_VAR ID;
 */
 
 //componente: sentencia | ciclo | condicional;
-componente returns [ASTNode node]: sentencia {
-	$node=$sentencia.node;
-};
+componente returns [ASTNode node]: sentencia {$node=$sentencia.node;}
+	| condicional {$node=$condicional.node;};
 
 
 

@@ -30,8 +30,11 @@ public class Condicional implements ASTNode {
                 n.execute(symbolTable);
         }
         else{
-            for(ASTNode n:elseBody)
-                n.execute(symbolTable);
+        	if(elseBody != null)
+        	{
+        		for(ASTNode n:elseBody)
+                    n.execute(symbolTable);
+        	}
         }
         return null;
     }

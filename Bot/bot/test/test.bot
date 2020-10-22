@@ -1,14 +1,10 @@
-'nueva;
-nueva <- (4>~20*5+1000) & @T |@T;
-$ nueva;
-nueva <- "hola" <> "holas";
-$ nueva;
-asig <- "Hola";
-$ asig;
-'asig <- "Hola";
-$ asig;
-asig <-"Mundo";
-$ asig;
-'new;
-? new;
-$ new;
+if "hola" = "holasdds" ->
+$ "Verdadero";
+else
+$ "Falso";
+'nuevaVariable <- 5;
+$ nuevaVariable;
+	if nuevaVariable > 0 ->
+		$ "Verdadero mayor a 0";
+	end;
+end;
