@@ -6,7 +6,7 @@
 package interprete;
 
 import java.util.Map;
-
+import java.util.Stack;
 /**
  *
  * @author edwin
@@ -23,8 +23,8 @@ public class Or implements ASTNode{
     
     
     @Override
-    public Object execute(Map<String,Object> symbolTable) {
-        return  (boolean) operand1.execute(symbolTable) || (boolean)operand2.execute(symbolTable);
+    public Object execute(Stack pila) {
+        return  (boolean) operand1.execute(pila) || (boolean)operand2.execute(pila);
     }
     
 }

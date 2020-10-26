@@ -6,6 +6,7 @@
 package interprete;
 
 import java.util.Map;
+import java.util.Stack;
 
 /**
  *
@@ -21,8 +22,8 @@ public class Inverso implements ASTNode{
     
     
     @Override
-    public Object execute(Map<String,Object> symbolTable) {
-        return  ((float) operand1.execute(symbolTable) * -1);
+    public Object execute(Stack pila) {
+        return  ((float) operand1.execute(pila) * -1);
     }
     
     

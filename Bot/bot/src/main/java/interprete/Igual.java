@@ -6,6 +6,7 @@
 package interprete;
 
 import java.util.Map;
+import java.util.Stack;
 
 /**
  *
@@ -23,9 +24,9 @@ public class Igual implements ASTNode{
     
     
     @Override
-    public Object execute(Map<String,Object> symbolTable) {
-        if(operand1.execute(symbolTable) instanceof Float && operand2.execute(symbolTable) instanceof Float) {
-        	if ((float) operand1.execute(symbolTable) == (float) operand2.execute(symbolTable))
+    public Object execute(Stack pila) {
+        if(operand1.execute(pila) instanceof Float && operand2.execute(pila) instanceof Float) {
+        	if ((float) operand1.execute(pila) == (float) operand2.execute(pila))
             {
             	return true;
             }
@@ -33,8 +34,8 @@ public class Igual implements ASTNode{
         		return false;
         	}
         }
-        else if(operand1.execute(symbolTable) instanceof String && operand2.execute(symbolTable) instanceof String) {
-        	if (((String)operand1.execute(symbolTable)).equals((String)operand2.execute(symbolTable)))
+        else if(operand1.execute(pila) instanceof String && operand2.execute(pila) instanceof String) {
+        	if (((String)operand1.execute(pila)).equals((String)operand2.execute(pila)))
             {
             	return true;
             }
@@ -42,8 +43,8 @@ public class Igual implements ASTNode{
         		return false;
         	}
         }
-        else if(operand1.execute(symbolTable) instanceof Boolean && operand2.execute(symbolTable) instanceof Boolean) {
-        	if (((Boolean)operand1.execute(symbolTable)) == ((Boolean)operand2.execute(symbolTable)))
+        else if(operand1.execute(pila) instanceof Boolean && operand2.execute(pila) instanceof Boolean) {
+        	if (((Boolean)operand1.execute(pila)) == ((Boolean)operand2.execute(pila)))
             {
             	return true;
             }

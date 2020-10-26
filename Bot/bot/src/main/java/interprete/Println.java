@@ -6,7 +6,7 @@
 package interprete;
 
 import java.util.Map;
-
+import java.util.Stack;
 /**
  *
  * @author edwin
@@ -21,8 +21,8 @@ public class Println implements ASTNode{
     
     
     @Override
-    public Object execute(Map<String,Object> symbolTable) {
-        System.out.println(data.execute(symbolTable));     
+    public Object execute(Stack pila) {
+        System.out.println(data.execute(pila));     
         return null;
     } 
     

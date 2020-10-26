@@ -6,7 +6,7 @@
 package interprete;
 
 import java.util.Map;
-
+import java.util.Stack;
 /**
  *
  * @author edwin
@@ -23,8 +23,8 @@ public class Multiplicacion implements ASTNode{
     
     
     @Override
-    public Object execute(Map<String,Object> symbolTable) {
-        return  (float) operand1.execute(symbolTable) * (float)operand2.execute(symbolTable);
+    public Object execute(Stack pila) {
+        return  (float) operand1.execute(pila) * (float)operand2.execute(pila);
     }
     
     

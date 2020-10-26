@@ -6,7 +6,7 @@
 package interprete;
 
 import java.util.Map;
-
+import java.util.Stack;
 /**
  *
  * @author edwin
@@ -22,10 +22,18 @@ public class VarAsignacion implements ASTNode{
     }
 
     @Override
-    public Object execute(Map<String,Object> symbolTable) {
-        if(symbolTable.containsKey(name))
-            symbolTable.replace(name,variable.execute(symbolTable));
-        else System.out.println("Error asignacion");
+    public Object execute(Stack pila) {
+        Stack stackAux=(Stack)pila.clone();
+        while(!stackAux.empty()){
+            Map<String,Object> symbolTable=(Map<String,Object>) stackAux.pop();
+            if(symbolTable.containsKey(name)){
+                symbolTable.replace(name,variable.execute(pila));
+                return null;
+            }
+        }
+        System.out.println("Error asignacion");
+        System.out.println("Error: No existe la variable:"+name);
+        System.exit(0); //Matar el programa
         return null;
     }
     

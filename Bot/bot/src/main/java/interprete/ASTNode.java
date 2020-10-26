@@ -7,10 +7,12 @@ package interprete;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Stack;
 /**
  *
  * @author edwin
  */
+
 public interface ASTNode {
-    public Object execute(Map<String,Object> symbolTable);
+    public Object execute(Stack pila);
 }

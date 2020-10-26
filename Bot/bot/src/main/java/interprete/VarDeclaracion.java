@@ -6,7 +6,7 @@
 package interprete;
 
 import java.util.Map;
-
+import java.util.Stack;
 /**
  *
  * @author edwin
@@ -20,7 +20,8 @@ public class VarDeclaracion implements ASTNode {
     }
 
     @Override
-    public Object execute(Map<String, Object> symbolTable) {
+    public Object execute(Stack pila) {
+        Map<String,Object> symbolTable=(Map<String,Object>) pila.peek();
         symbolTable.put(name, new Object());
         return null;
     }

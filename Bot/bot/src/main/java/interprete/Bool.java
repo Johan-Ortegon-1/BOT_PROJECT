@@ -6,6 +6,7 @@
 package interprete;
 
 import java.util.Map;
+import java.util.Stack;
 
 /**
  *
@@ -23,7 +24,7 @@ public class Bool implements ASTNode{
     }
 
     @Override
-    public Object execute(Map<String,Object> symbolTable) {
+    public Object execute(Stack pila ) {
         return value;
     }
     

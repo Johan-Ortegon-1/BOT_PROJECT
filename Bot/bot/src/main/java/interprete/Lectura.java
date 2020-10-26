@@ -7,6 +7,7 @@ package interprete;
 
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Stack;
 
 /**
  *
@@ -21,10 +22,11 @@ public class Lectura implements ASTNode{
     
     
     @Override
-    public Object execute(Map<String, Object> symbolTable) {
+    public Object execute(Stack pila) {
         System.out.println("\nIngrese el valor");
         Scanner in = new Scanner(System.in);
         String s = in.nextLine(); 
+        Map<String,Object> symbolTable=(Map<String,Object>) pila.peek();
         symbolTable.replace(variable, s);
         return null;
     }

@@ -6,7 +6,7 @@
 package interprete;
 
 import java.util.Map;
-
+import java.util.Stack;
 /**
  *
  * @author edwin
@@ -19,8 +19,17 @@ public class VarReferencia implements ASTNode {
     }
 
     @Override
-    public Object execute(Map<String, Object> symbolTable) {
-        return symbolTable.get(name);
+    public Object execute(Stack pila) {
+        Stack stackAux=(Stack)pila.clone();
+        while(!stackAux.empty()){
+            Map<String,Object> symbolTable=(Map<String,Object>) stackAux.pop();
+            if(symbolTable.get(name)!=null)
+                return symbolTable.get(name);
+        }
+        System.out.println("Error: No existe la variable:"+name);
+        System.exit(0); //Matar el programa
+        return null;
+        
     }
     
     

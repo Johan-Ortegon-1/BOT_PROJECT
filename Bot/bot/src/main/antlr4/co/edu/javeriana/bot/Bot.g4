@@ -28,14 +28,10 @@ program: {
     //robot* | 
     (componente {body.add($componente.node);})*
     {
-        System.out.println("Size:"+pila.size());
         for(ASTNode n:body){
-                Map map=((Map)pila.peek());
-                System.out.println(map);
-        	n.execute(map);     
+        	n.execute(pila);     
         }
-        pila.pop();
-        System.out.println("Size:"+pila.size());
+        pila.clear();
     };
 
 //robot returns [ASTNode node]: ((movimiento_robot{$node=$movimiento_robot.node;}|accion_robot{$node=$accion_robot.node;}) SEMICOLON)+;
@@ -84,8 +80,6 @@ variable_asig returns [ASTNode node]: ID ASSIGN variable {$node=new VarAsignacio
 
 condicional returns[ASTNode node]: IF expresion_logica THEN 
 			{
-                            Map<String,Object> symbolTable=new HashMap<String,Object>();
-                            pila.push(symbolTable);
                             List<ASTNode> body = new ArrayList<ASTNode>();
 			}
                             (s1 = componente {body.add($s1.node);})*
@@ -102,26 +96,18 @@ condicional returns[ASTNode node]: IF expresion_logica THEN
                             {
                                 $node = new Condicional($expresion_logica.node, body, elseBody);
                             })?
-                        END SEMICOLON
-                        {
-                            pila.pop();
-                        };
+                        END SEMICOLON;
 
 
 ciclo returns [ASTNode node]: WHILE PAR_OPEN expresion_logica PAR_CLOSE THEN
         {
-            Map<String,Object> symbolTable=new HashMap<String,Object>();
-            pila.push(symbolTable);
             List<ASTNode> body = new ArrayList<ASTNode>();
         }
             (s1 = componente {body.add($s1.node);})*
         {
             $node = new Ciclo($expresion_logica.node, body);
 	}
-	END SEMICOLON
-        {
-            pila.pop();
-        };
+	END SEMICOLON;
 
 
 

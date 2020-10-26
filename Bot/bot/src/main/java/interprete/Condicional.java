@@ -5,9 +5,10 @@
  */
 package interprete;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import java.util.Stack;
 /**
  *
  * @author edwin
@@ -24,18 +25,21 @@ public class Condicional implements ASTNode {
     }
 
     @Override
-    public Object execute(Map<String,Object> symbolTable) {
-        if((boolean)condicion.execute(symbolTable)){
+    public Object execute(Stack pila) {
+        Map<String,Object> symbolTable=new HashMap<String,Object>();
+        pila.push(symbolTable);
+        if((boolean)condicion.execute(pila)){
             for(ASTNode n:body)
-                n.execute(symbolTable);
+                n.execute(pila);
         }
         else{
         	if(elseBody != null)
         	{
-        		for(ASTNode n:elseBody)
-                    n.execute(symbolTable);
+                    for(ASTNode n:elseBody)
+                        n.execute(pila);
         	}
         }
+        pila.pop();
         return null;
     }
     
