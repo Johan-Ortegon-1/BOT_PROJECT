@@ -23,7 +23,14 @@ public class Inverso implements ASTNode{
     
     @Override
     public Object execute(Stack pila) {
-        return  ((float) operand1.execute(pila) * -1);
+    	if(operand1.execute(pila) instanceof Float) 
+    	{
+    		return  ((float) operand1.execute(pila) * -1);
+    	}
+    	System.out.println("Error en el uso del inverso");
+        System.out.println("Op1: " + operand1.execute(pila));
+        System.exit(0);
+        return null;
     }
     
     

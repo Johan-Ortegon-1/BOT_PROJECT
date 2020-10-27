@@ -1,23 +1,6 @@
-'new <-2;
-'old <-7;
-'haha;
-if @T ->
-  'new <- 3;
-  $ new;
-  'nueva <- 4;
-  $ nueva;
-  $ old;
-  haha <- 10;
-  'var;
-  while(new<6) ->
-    'vary <- ~99;
-    $vary;
-    $ "funciona";
-    $ new;
-    new <-new+1;
-  end
-end;
-$ new;
-$ haha;
-var <- @T;
-$ vary;
+'var <- 5*5;
+$ "Cinco: " + " Seis";
+$ ("Cinco: " + var) + "PEPE";
+$ "Cinco: " + 5;
+$ "Division" + ~(8/9) + "PATATA";
+$ "Division"  - 9;

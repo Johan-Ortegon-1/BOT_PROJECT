@@ -61,6 +61,7 @@ factor returns [ASTNode node]:t1=term{$node=$t1.node;}
 term returns [ASTNode node]:
     NUM_FLOAT{$node=new Numero($NUM_FLOAT.text);}
     | NUM_INT{$node=new Numero($NUM_INT.text);}
+    | STRING{$node=new Cadena($STRING.text);}
     | factor_reverse {$node=new Inverso($factor_reverse.node);}
     | ID{$node=new VarReferencia($ID.text);}
     | PAR_OPEN expresion {$node=$expresion.node;} PAR_CLOSE;
@@ -156,7 +157,7 @@ parametro: NEW_VAR ID;
 //componente: sentencia | ciclo | condicional;
 componente returns [ASTNode node]: sentencia {$node=$sentencia.node;}
 	| condicional {$node=$condicional.node;}
-        | ciclo {$node=$ciclo.node;};
+    | ciclo {$node=$ciclo.node;};
 
 
 
@@ -240,6 +241,7 @@ STRING : '"' ('\\"'|.)*? '"';
 
 //- Comentarios
 COMMEENT: [////]+ -> skip;
+
 
 //- Expacios en blanco
 WS: [ \t\r\n]+ -> skip;
