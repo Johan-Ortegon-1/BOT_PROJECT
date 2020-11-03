@@ -3,4 +3,6 @@ $ "Cinco: " + " Seis";
 $ ("Cinco: " + var) + "PEPE";
 $ "Cinco: " + 5;
 $ "Division" + ~(8/9) + "PATATA";
-$ "Division"  - 9;
+$ "Hola mundo";
+'new <- "Hi";
+$ new + " " + var;

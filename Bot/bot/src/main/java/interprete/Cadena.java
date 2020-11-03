@@ -21,6 +21,8 @@ public class Cadena implements ASTNode{
 
     @Override
     public Object execute(Stack pila) {
-        return value;
+        return value.replace("\"", "");
+        //return value;
     }
+
 }

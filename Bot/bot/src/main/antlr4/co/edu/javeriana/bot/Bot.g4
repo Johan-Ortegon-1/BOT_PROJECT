@@ -110,7 +110,14 @@ ciclo returns [ASTNode node]: WHILE PAR_OPEN expresion_logica PAR_CLOSE THEN
 	}
 	END SEMICOLON;
 
+//^define fun \(['par]?|(,?['par]{1})*\);$
+/*/funcion_decl: NEW_FUNCT ID PAR_OPEN (parametro? | (COMMA? parametro)*) PAR_CLOSE THEN
+	componente*
+	END;
 
+funcion_invo: ID PAR_OPEN (variable? | (COMMA? variable)*) END;
+
+parametro: NEW_VAR ID;*/
 
 expresion_logica returns [ASTNode node]:
     t1=factor_logico{$node=$t1.node;} (OR t2=factor_logico{$node = new Or($node,$t2.node);})*;
@@ -147,25 +154,15 @@ sentencia returns [ASTNode node]:
     | lectura{$node=$lectura.node;}
     ) SEMICOLON; 
 
-/*funcion: NEW_FUNCT ID PAR_OPEN ((parametro)? | (parametro(COMMA parametro)*)) PAR_CLOSE THEN
-	componente*
-	END;
-
-parametro: NEW_VAR ID;
-*/
-
-//componente: sentencia | ciclo | condicional;
 componente returns [ASTNode node]: sentencia {$node=$sentencia.node;}
 	| condicional {$node=$condicional.node;}
     | ciclo {$node=$ciclo.node;};
+    //| funcion {$node=$funcion.node;};
 
 
-
-//impresion: PRINT (STRING (PLUS (ID|STRING))*) | ID {System.out.println()};
 impresion returns [ASTNode node]: PRINT variable {$node = new Println($variable.node);};
 lectura returns [ASTNode node]: READ ID {$node =new Lectura($ID.text);};
 
-//operacion: NUM_FLOAT ((PLUS|MINUS|MULT|DIV|REVERSE) NUM_FLOAT)+;
 /*start
 :
 	'hello' 'world' {
