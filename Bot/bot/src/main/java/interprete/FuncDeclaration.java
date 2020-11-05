@@ -14,25 +14,49 @@ import java.util.Stack;
  * @author edwin
  */
 public class FuncDeclaration implements ASTNode {
-    private List<ASTNode> parametros;
+    private String nombre;
+    private List<String> parametros;
     private List<ASTNode> body;
 
-    public FuncDeclaration(List<ASTNode> parametros, List<ASTNode> body) {
+    public FuncDeclaration(String nombre,List<String> parametros, List<ASTNode> body) {
+        this.nombre = nombre;
         this.parametros = parametros;
         this.body = body;
     }
 
     @Override
     public Object execute(Stack pila) {
-        Map<String,Object> symbolTable=new HashMap<String,Object>();
         /*for(ASTNode i:parametros)
-            symbolTable.put(key, value);*/
-        pila.push(symbolTable);
-        for(ASTNode n:body)
-            n.execute(pila);
-        pila.pop();
+        symbolTable.put(key, value);*/
+        Map<String,Object> symbolTable = (Map<String,Object>)pila.peek();
+        symbolTable.put(nombre, this);
         return null;
     }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public List<String> getParametros() {
+        return parametros;
+    }
+
+    public void setParametros(List<String> parametros) {
+        this.parametros = parametros;
+    }
+
+    public List<ASTNode> getBody() {
+        return body;
+    }
+
+    public void setBody(List<ASTNode> body) {
+        this.body = body;
+    }
+    
     
     
 }

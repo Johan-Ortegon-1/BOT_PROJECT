@@ -111,13 +111,35 @@ ciclo returns [ASTNode node]: WHILE PAR_OPEN expresion_logica PAR_CLOSE THEN
 	END SEMICOLON;
 
 //^define fun \(['par]?|(,?['par]{1})*\);$
-/*/funcion_decl: NEW_FUNCT ID PAR_OPEN (parametro? | (COMMA? parametro)*) PAR_CLOSE THEN
-	componente*
+funcion_decl returns [ASTNode node]: 
+        
+        NEW_FUNCT ID PAR_OPEN 
+        {
+            List<String> parametros = new ArrayList<String>();
+        }
+        (p1=parametro?{parametros.add($p1.node);} | (COMMA? p2=parametro{parametros.add($p2.node);})*) 
+        PAR_CLOSE THEN
+        {
+            List<ASTNode> body = new ArrayList<ASTNode>();
+        }
+	(s1=componente{body.add($s1.node);})*
+        {
+            $node = new FuncDeclaration($ID.text,parametros, body);
+	}
 	END;
 
-funcion_invo: ID PAR_OPEN (variable? | (COMMA? variable)*) END;
+funcion_invo returns [ASTNode node]: ID PAR_OPEN 
+        {
+            List<ASTNode> parametros = new ArrayList<ASTNode>();
+        }
+        (v1=variable?{parametros.add($v1.node);} | (COMMA? v2=variable{parametros.add($v2.node);})*) 
+        {
+            $node = new FuncInvocation($ID.text,parametros);
+        }
+        END;
 
-parametro: NEW_VAR ID;*/
+
+parametro returns [String node]: NEW_VAR ID {$node=$ID.text;};
 
 expresion_logica returns [ASTNode node]:
     t1=factor_logico{$node=$t1.node;} (OR t2=factor_logico{$node = new Or($node,$t2.node);})*;
@@ -156,8 +178,9 @@ sentencia returns [ASTNode node]:
 
 componente returns [ASTNode node]: sentencia {$node=$sentencia.node;}
 	| condicional {$node=$condicional.node;}
-    | ciclo {$node=$ciclo.node;};
-    //| funcion {$node=$funcion.node;};
+    | ciclo {$node=$ciclo.node;}
+    | funcion_decl {$node=$funcion_decl.node;}
+    | funcion_invo {$node=$funcion_invo.node;};
 
 
 impresion returns [ASTNode node]: PRINT variable {$node = new Println($variable.node);};

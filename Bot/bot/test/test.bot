@@ -6,3 +6,21 @@ $ "Division" + ~(8/9) + "PATATA";
 $ "Hola mundo";
 'new <- "Hi";
 $ new + " " + var;
+
+define funcion1('par1,'par2) ->
+  $"Hola"+par1;
+  'my <- par1*par2;
+  $my;
+  $var;
+  'i<-0; 
+  while(i<5) ->
+    $ i;
+    i<-i+1;
+  end;
+  if var==25 ->
+    'haha<-"Yes";
+  end;
+end;
+
+funcion1(2,4+6)
+$my;
