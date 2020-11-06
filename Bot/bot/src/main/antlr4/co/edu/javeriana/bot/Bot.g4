@@ -35,18 +35,21 @@ program: {
     };
 
 //robot returns [ASTNode node]: ((movimiento_robot{$node=$movimiento_robot.node;}|accion_robot{$node=$accion_robot.node;}) SEMICOLON)+;
-robot returns [ASTNode node]: ((movimiento_robot|accion_robot) SEMICOLON)+;
+robot returns [ASTNode node]: ((movimiento_robot {$node=$movimiento_robot.node;}|accion_robot {$node=$accion_robot.node;}))+;
 
 //Movimientos robot
-movimiento_robot: (mover_arriba | mover_izquierda | mover_derecha | mover_abajo);			
-mover_arriba: ROBOT_UP pasos_robot {bot.up($pasos_robot.pasos); };
-mover_izquierda: LT pasos_robot {bot.left($pasos_robot.pasos);};
-mover_derecha: GT pasos_robot{bot.right($pasos_robot.pasos);};
-mover_abajo: ROBOT_DOWN pasos_robot{bot.down($pasos_robot.pasos);};
-pasos_robot returns[int pasos]: NUM_INT{$pasos = Integer.parseInt($NUM_INT.text);};
+movimiento_robot returns [ASTNode node]: (mover_arriba {$node=$mover_arriba.node;} 
+											| mover_izquierda {$node=$mover_izquierda.node;} 
+											| mover_derecha {$node=$mover_derecha.node;}
+											| mover_abajo {$node=$mover_abajo.node;}
+);
+mover_arriba returns [ASTNode node]: ROBOT_UP expresion {$node = new RobotUp($expresion.node, this.bot);};
+mover_izquierda returns [ASTNode node]: LT expresion {$node = new RobotLeft($expresion.node, this.bot);};
+mover_derecha returns [ASTNode node]: GT expresion {$node = new RobotRight($expresion.node, this.bot);};
+mover_abajo returns [ASTNode node]: ROBOT_DOWN expresion {$node = new RobotDown($expresion.node, this.bot);};
 
 //Aciones robot
-accion_robot: (ROBOT_PICK | ROBOT_DROP);
+accion_robot returns [ASTNode node]: (ROBOT_PICK {$node = new RobotPick(this.bot);} | ROBOT_DROP {$node = new RobotDrop(this.bot);});
 
 //SEGUNDA ENTREGA
 
@@ -126,17 +129,18 @@ funcion_decl returns [ASTNode node]:
         {
             $node = new FuncDeclaration($ID.text,parametros, body);
 	}
-	END;
+	END SEMICOLON;
 
 funcion_invo returns [ASTNode node]: ID PAR_OPEN 
         {
             List<ASTNode> parametros = new ArrayList<ASTNode>();
         }
         (v1=variable?{parametros.add($v1.node);} | (COMMA? v2=variable{parametros.add($v2.node);})*) 
+        PAR_CLOSE
         {
             $node = new FuncInvocation($ID.text,parametros);
         }
-        END;
+        SEMICOLON;
 
 
 parametro returns [String node]: NEW_VAR ID {$node=$ID.text;};
