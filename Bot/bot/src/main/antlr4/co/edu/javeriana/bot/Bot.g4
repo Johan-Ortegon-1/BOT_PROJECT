@@ -120,7 +120,7 @@ funcion_decl returns [ASTNode node]:
         {
             List<String> parametros = new ArrayList<String>();
         }
-        (p1=parametro?{parametros.add($p1.node);} | (COMMA? p2=parametro{parametros.add($p2.node);})*) 
+        (p1=parametro?{parametros.add($p1.node);} | (p1=parametro{parametros.add($p1.node);} (COMMA? p2=parametro{parametros.add($p2.node);})*) )
         PAR_CLOSE THEN
         {
             List<ASTNode> body = new ArrayList<ASTNode>();
@@ -135,7 +135,7 @@ funcion_invo returns [ASTNode node]: ID PAR_OPEN
         {
             List<ASTNode> parametros = new ArrayList<ASTNode>();
         }
-        (v1=variable?{parametros.add($v1.node);} | (COMMA? v2=variable{parametros.add($v2.node);})*) 
+        (v1=variable?{parametros.add($v1.node);} | (v1=variable{parametros.add($v1.node);} (COMMA? v2=variable{parametros.add($v2.node);})*) ) 
         PAR_CLOSE
         {
             $node = new FuncInvocation($ID.text,parametros);
