@@ -26,8 +26,6 @@ public class FuncDeclaration implements ASTNode {
 
     @Override
     public Object execute(Stack pila) {
-        /*for(ASTNode i:parametros)
-        symbolTable.put(key, value);*/
         Map<String,Object> symbolTable = (Map<String,Object>)pila.peek();
         symbolTable.put(nombre, this);
         return null;

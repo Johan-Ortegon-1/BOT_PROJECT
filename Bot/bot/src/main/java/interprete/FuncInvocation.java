@@ -43,7 +43,7 @@ public class FuncInvocation implements ASTNode {
                 }
             }
             else{
-                System.err.println("Error: Numero esperado de parametros incorrectos");
+                System.err.println("Error: Numero esperado de parametros incorrectos al llamar a: " + this.nombre);
                 System.exit(0); //Matar el programa
             }
             symbolTable.put("return", "null");
@@ -60,7 +60,7 @@ public class FuncInvocation implements ASTNode {
             return retorno;
         }
         else{
-            System.err.println("Error: No existe la funcion:"+nombre);
+            System.err.println("Error: No existe la funcion: "+nombre);
             System.exit(0); //Matar el programa
         }
         return null;

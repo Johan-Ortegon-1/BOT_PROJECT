@@ -24,7 +24,6 @@ public class Cadena implements ASTNode{
     	if(value.charAt(0) == '\"')
     		value = value.substring(1, value.length()-1);
         return value.replace("\\\"", "\"");
-        //return value;
     }
 
 }

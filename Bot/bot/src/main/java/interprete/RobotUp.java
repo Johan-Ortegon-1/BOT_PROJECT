@@ -38,7 +38,7 @@ public class RobotUp implements ASTNode{
     	}
     	else
     	{
-    		System.out.println("El tipo de dato no es valido para mover el robot: " + steps.execute(pila));
+    		System.err.println("El tipo de dato no es valido para mover el robot: " + steps.execute(pila));
     		System.exit(0);
     	}
     	this.bot.up(steps_int);

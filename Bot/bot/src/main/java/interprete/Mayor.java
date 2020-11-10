@@ -44,13 +44,10 @@ public class Mayor implements ASTNode{
         	}
         }
         else {
-        	System.out.println("Error en la comparacion!");
+        	System.err.println("Error en la comparacion!");
         	System.exit(0);
         	return null;
         }
     }
-    
-    
-    /*Para los String también debemos tener definidos operadores de mayor y menor, o con la comparación es suficiente? */
-    
+        
 }

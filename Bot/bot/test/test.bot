@@ -36,6 +36,8 @@ moverAbajo(10);
 moverIzquierda(13);
 moverArriba(10);
 
+moverArriba();
+
 'resultado <- calculaPotencia(4, 3);
 moverDiagonal(resultado);
 D;

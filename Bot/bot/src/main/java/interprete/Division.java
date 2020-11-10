@@ -27,11 +27,14 @@ public class Division implements ASTNode{
     public Object execute(Stack pila) {
     	if(operand1.execute(pila) instanceof Float && operand2.execute(pila) instanceof Float) 
     	{
-    		return  (float) operand1.execute(pila) / (float)operand2.execute(pila);
+    		if((float)operand2.execute(pila) != 0)
+    		{
+    			return  (float) operand1.execute(pila) / (float)operand2.execute(pila);
+    		}
     	}
-    	System.out.println("Error en el uso de la División");
-        System.out.println("Op1: " + operand1.execute(pila));
-        System.out.println("Op2: " + operand2.execute(pila));
+    	System.err.println("Error en el uso de la División");
+        System.err.println("Op1: " + operand1.execute(pila));
+        System.err.println("Op2: " + operand2.execute(pila));
         System.exit(0);
         return null;
     }

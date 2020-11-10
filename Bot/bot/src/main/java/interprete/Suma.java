@@ -40,13 +40,17 @@ public class Suma implements ASTNode{
     	{
     		return  (float) operand1.execute(pila) + (float)operand2.execute(pila);
     	}
-    	else if(operand1.execute(pila) instanceof String && operand2.execute(pila) instanceof Boolean) 
+    	else if(operand1.execute(pila) instanceof String && operand2.execute(pila) instanceof Boolean)
     	{
     		return  (String) operand1.execute(pila) + (Boolean)operand2.execute(pila);
     	}
-        System.out.println("Error, en el uso de la Suma o concatenación");
-        System.out.println("Op1: " + operand1.execute(pila));
-        System.out.println("Op2: " + operand2.execute(pila));
+    	else if(operand1.execute(pila) instanceof Boolean && operand2.execute(pila) instanceof String)
+    	{
+    		return  (Boolean) operand1.execute(pila) + (String)operand2.execute(pila);
+    	}
+        System.err.println("Error, en el uso de la Suma o concatenación");
+        System.err.println("Op1: " + operand1.execute(pila));
+        System.err.println("Op2: " + operand2.execute(pila));
         System.exit(0);
         return null;
     }

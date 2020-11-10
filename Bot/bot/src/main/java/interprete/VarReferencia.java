@@ -26,7 +26,7 @@ public class VarReferencia implements ASTNode {
             if(symbolTable.get(name)!=null)
                 return symbolTable.get(name);
         }
-        System.out.println("Error: No existe la variable:"+name);
+        System.err.println("Error: No existe la variable:"+name);
         System.exit(0); //Matar el programa
         return null;
         

@@ -31,8 +31,8 @@ public class VarAsignacion implements ASTNode{
                 return null;
             }
         }
-        System.out.println("Error asignacion");
-        System.out.println("Error: No existe la variable:"+name);
+        System.err.println("Error asignacion");
+        System.err.println("Error: No existe la variable:"+name);
         System.exit(0); //Matar el programa
         return null;
     }

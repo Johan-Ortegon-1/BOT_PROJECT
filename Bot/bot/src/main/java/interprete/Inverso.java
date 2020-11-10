@@ -27,8 +27,8 @@ public class Inverso implements ASTNode{
     	{
     		return  ((float) operand1.execute(pila) * -1);
     	}
-    	System.out.println("Error en el uso del inverso");
-        System.out.println("Op1: " + operand1.execute(pila));
+    	System.err.println("Error en el uso del inverso");
+        System.err.println("Op1: " + operand1.execute(pila));
         System.exit(0);
         return null;
     }

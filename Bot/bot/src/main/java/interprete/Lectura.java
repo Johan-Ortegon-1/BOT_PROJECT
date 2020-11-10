@@ -44,15 +44,9 @@ public class Lectura implements ASTNode{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-        		/*System.out.println("\nIngrese el valor: ");
-                Scanner in = new Scanner(System.in);
-                String s = in.nextLine(); 
-                symbolTable.replace(variable, s);
-                in.close();
-                return null;*/
         	}
         }
-        System.out.println("Error: No existe la variable:"+this.variable);
+        System.err.println("Error: No existe la variable:"+this.variable);
         System.exit(0); //Matar el programa
         return null;
     }

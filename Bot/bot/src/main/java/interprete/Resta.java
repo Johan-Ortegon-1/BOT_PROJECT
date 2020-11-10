@@ -28,13 +28,12 @@ public class Resta implements ASTNode{
     	{
     		return  (float) operand1.execute(pila) - (float)operand2.execute(pila);
     	}
-    	System.out.println("Error en el uso de la Resta");
-        System.out.println("Op1: " + operand1.execute(pila));
-        System.out.println("Op2: " + operand2.execute(pila));
+    	System.err.println("Error en el uso de la Resta");
+        System.err.println("Op1: " + operand1.execute(pila));
+        System.err.println("Op2: " + operand2.execute(pila));
         System.exit(0);
         return null;
     }
-    
     
     
     
