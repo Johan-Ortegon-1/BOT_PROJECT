@@ -45,6 +45,7 @@ public class Mayor implements ASTNode{
         }
         else {
         	System.out.println("Error en la comparacion!");
+        	System.exit(0);
         	return null;
         }
     }

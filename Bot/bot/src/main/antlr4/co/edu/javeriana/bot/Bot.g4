@@ -65,17 +65,17 @@ term returns [ASTNode node]:
     NUM_FLOAT{$node=new Numero($NUM_FLOAT.text);}
     | NUM_INT{$node=new Numero($NUM_INT.text);}
     | STRING{$node=new Cadena($STRING.text);}
+    | BOOLEAN{$node=new Bool($BOOLEAN.text);}
     | factor_reverse {$node=new Inverso($factor_reverse.node);}
     | ID{$node=new VarReferencia($ID.text);}
     | PAR_OPEN expresion {$node=$expresion.node;} PAR_CLOSE;
 
 factor_reverse returns [ASTNode node]: (REVERSE t2=term{$node = $t2.node;});
-
 cadena returns [ASTNode node]: STRING {$node = new Cadena($STRING.text);};
 bool returns [ASTNode node]: BOOLEAN {$node = new Bool($BOOLEAN.text);};
     
 //Variables
-variable returns [ASTNode node]: expresion {$node=$expresion.node;} | cadena {$node=$cadena.node;} | bool {$node=$bool.node;} | expresion_logica {$node=$expresion_logica.node;};
+variable returns [ASTNode node]: expresion {$node=$expresion.node;} | cadena {$node=$cadena.node;} | bool {$node=$bool.node;} | expresion_logica {$node=$expresion_logica.node;} | funcion_invo {$node=$funcion_invo.node;};
 nueva_variable returns[ASTNode node]: NEW_VAR ID {$node=new VarDeclaracion($ID.text);};
 nueva_variable_asig returns [ASTNode node]: NEW_VAR ID ASSIGN variable{$node=new VarDeclAsig($ID.text,$variable.node);}; //Por hacer
 variable_asig returns [ASTNode node]: ID ASSIGN variable {$node=new VarAsignacion($ID.text,$variable.node);};
@@ -103,7 +103,7 @@ condicional returns[ASTNode node]: IF expresion_logica THEN
                         END SEMICOLON;
 
 
-ciclo returns [ASTNode node]: WHILE PAR_OPEN expresion_logica PAR_CLOSE THEN
+ciclo returns [ASTNode node]: WHILE expresion_logica THEN
         {
             List<ASTNode> body = new ArrayList<ASTNode>();
         }
@@ -120,7 +120,7 @@ funcion_decl returns [ASTNode node]:
         {
             List<String> parametros = new ArrayList<String>();
         }
-        (p1=parametro?{parametros.add($p1.node);} | (p1=parametro{parametros.add($p1.node);} (COMMA? p2=parametro{parametros.add($p2.node);})*) )
+        (p1=parametro{parametros.add($p1.node);} | p1=parametro? | (p1=parametro{parametros.add($p1.node);} (COMMA? p2=parametro{parametros.add($p2.node);})*) )
         PAR_CLOSE THEN
         {
             List<ASTNode> body = new ArrayList<ASTNode>();
@@ -135,13 +135,12 @@ funcion_invo returns [ASTNode node]: ID PAR_OPEN
         {
             List<ASTNode> parametros = new ArrayList<ASTNode>();
         }
-        (v1=variable?{parametros.add($v1.node);} | (v1=variable{parametros.add($v1.node);} (COMMA? v2=variable{parametros.add($v2.node);})*) ) 
+        (v1=variable{parametros.add($v1.node);} | v1=variable? | (v1=variable{parametros.add($v1.node);} (COMMA? v2=variable{parametros.add($v2.node);})*) ) 
         PAR_CLOSE
         {
             $node = new FuncInvocation($ID.text,parametros);
         }
-        SEMICOLON;
-
+        SEMICOLON?;
 
 parametro returns [String node]: NEW_VAR ID {$node=$ID.text;};
 
@@ -178,17 +177,21 @@ sentencia returns [ASTNode node]:
     | impresion {$node=$impresion.node;}
     | robot {$node = $robot.node;}
     | lectura{$node=$lectura.node;}
+    | retorno{$node=$retorno.node;}
     ) SEMICOLON; 
 
 componente returns [ASTNode node]: sentencia {$node=$sentencia.node;}
 	| condicional {$node=$condicional.node;}
     | ciclo {$node=$ciclo.node;}
     | funcion_decl {$node=$funcion_decl.node;}
-    | funcion_invo {$node=$funcion_invo.node;};
+    | funcion_invo {$node=$funcion_invo.node;}
+    | COMMEENT {$node = null;};
 
 
 impresion returns [ASTNode node]: PRINT variable {$node = new Println($variable.node);};
 lectura returns [ASTNode node]: READ ID {$node =new Lectura($ID.text);};
+
+retorno returns [ASTNode node]: RETURN variable {$node = new Retorno($variable.node);};
 
 /*start
 :

@@ -5,6 +5,9 @@
  */
 package interprete;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Stack;
@@ -23,11 +26,34 @@ public class Lectura implements ASTNode{
     
     @Override
     public Object execute(Stack pila) {
-        System.out.println("\nIngrese el valor");
-        Scanner in = new Scanner(System.in);
-        String s = in.nextLine(); 
-        Map<String,Object> symbolTable=(Map<String,Object>) pila.peek();
-        symbolTable.replace(variable, s);
+    	Stack stackAux=(Stack)pila.clone();
+        while(!stackAux.empty())
+        {
+        	Map<String,Object> symbolTable=(Map<String,Object>) stackAux.pop();
+        	if(symbolTable.containsKey(this.variable))
+        	{
+        		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        		// Leyendo datos usando readLine
+        		try {
+        			System.out.println("\nIngrese el valor: ");
+					String name = reader.readLine();
+					symbolTable.replace(variable, name);
+					return null;
+					
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+        		/*System.out.println("\nIngrese el valor: ");
+                Scanner in = new Scanner(System.in);
+                String s = in.nextLine(); 
+                symbolTable.replace(variable, s);
+                in.close();
+                return null;*/
+        	}
+        }
+        System.out.println("Error: No existe la variable:"+this.variable);
+        System.exit(0); //Matar el programa
         return null;
     }
     

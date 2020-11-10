@@ -34,7 +34,8 @@ public class Menor implements ASTNode{
         	}
         }
         else if(operand1.execute(pila) instanceof String && operand2.execute(pila) instanceof String) {
-        	if (((String)operand1.execute(pila)).compareTo((String)operand2.execute(pila)) == -1)
+        	
+        	if (("\""+((String)operand1.execute(pila)+"\"")).compareTo("\""+((String)operand2.execute(pila)+"\"")) == -1)
             {
             	return true;
             }
@@ -44,6 +45,7 @@ public class Menor implements ASTNode{
         }
         else {
         	System.out.println("Error en la comparacion!");
+        	System.exit(0);
         	return null;
         }
     }

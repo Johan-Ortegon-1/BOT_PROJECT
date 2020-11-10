@@ -22,7 +22,7 @@ public class VarDeclaracion implements ASTNode {
     @Override
     public Object execute(Stack pila) {
         Map<String,Object> symbolTable=(Map<String,Object>) pila.peek();
-        symbolTable.put(name, new Object());
+        symbolTable.put(name, "null");
         return null;
     }
     

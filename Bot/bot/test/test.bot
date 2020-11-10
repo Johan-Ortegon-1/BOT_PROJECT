@@ -1,9 +1,49 @@
-'i <- 1;
-while (i < 4) ->
-	$"Iteracion: " + i;
-	> 2+i;
-	V 2+i;
-	< 2+i;
-	^ 2+i;
-	i <- i + 1;
+define moverArriba('pasos) ->
+	^ pasos;
 end;
+
+define moverAbajo('pasos) ->
+	V pasos;
+end;
+
+define moverDerecha('pasos) ->
+	> pasos;
+end;
+
+define moverIzquierda('pasos) ->
+	< pasos;
+end;
+
+define moverDiagonal('pasos) ->
+	while pasos > 0 ->
+		> 1;
+		V 1;
+		pasos <- pasos - 1;
+	end;
+end;
+
+define calculaPotencia('base, 'exp) ->
+	if exp = 0 ->
+		return 1;
+	else
+		return base*exp;
+	end;
+end;
+
+moverDerecha(13);
+P;
+moverAbajo(10);
+moverIzquierda(13);
+moverArriba(10);
+
+'resultado <- calculaPotencia(4, 3);
+moverDiagonal(resultado);
+D;
+^1;
+'hola;
+?hola;
+if hola = "patata" & 456/85 < 23 & @T = !@F ->
+	$ "Condicionales";
+else
+	$ "Condicionales 2";
+end; 
